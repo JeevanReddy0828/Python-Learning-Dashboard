@@ -126,7 +126,7 @@ export default function LessonPage() {
                 <p className="text-gray-700 dark:text-gray-300">{lesson.analogy}</p>
               </div>
 
-              <LessonContent html={lesson.content_html} diagramData={lesson.diagram_data} />
+              <LessonContent html={lesson.content_html} diagramData={lesson.diagram_data} slug={lesson.slug} />
 
               <div className="flex gap-3 pt-4">
                 <button onClick={() => setView('exercises')} className="btn-primary flex-1 py-3">

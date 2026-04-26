@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react'
 import DOMPurify from 'dompurify'
 import type { DiagramData } from '../../types'
+import ConceptVisual from './ConceptVisual'
 
 interface Props {
   html: string
   diagramData: DiagramData | null
+  slug?: string
 }
 
-export default function LessonContent({ html, diagramData }: Props) {
+export default function LessonContent({ html, diagramData, slug }: Props) {
   const diagramRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function LessonContent({ html, diagramData }: Props) {
 
   return (
     <div className="space-y-6">
+      {slug && <ConceptVisual slug={slug} />}
       {diagramData && (
         <div className="card p-4 flex justify-center overflow-x-auto">
           <div ref={diagramRef} className="max-w-full" />
