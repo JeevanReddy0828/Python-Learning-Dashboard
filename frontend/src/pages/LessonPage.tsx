@@ -8,6 +8,7 @@ import ExerciseRouter from '../components/exercises/ExerciseRouter'
 import AIPanel from '../components/ai/AIPanel'
 import MicroWin from '../components/adhd/MicroWin'
 import { useGamificationStore } from '../store/gamificationStore'
+import { useModulesStore } from '../store/modulesStore'
 import toast from 'react-hot-toast'
 
 export default function LessonPage() {
@@ -19,6 +20,7 @@ export default function LessonPage() {
   const startTime = useRef(Date.now())
   const { setLesson: storSetLesson } = useLessonStore()
   const { triggerConfetti, addXPEvent } = useGamificationStore()
+  const { refresh: refreshModules } = useModulesStore()
   const [showMicroWin, setShowMicroWin] = useState(false)
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function LessonPage() {
       if (data.level_up) toast.success(`Level up! You're now Level ${data.new_level} ⬆️`, { duration: 5000 })
     } catch { /* already completed */ }
 
+    refreshModules().catch(() => {})
     if (lesson.next_lesson_id) {
       navigate(`/lessons/${lesson.next_lesson_id}`)
     } else {

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import type { LessonDetail } from '../../types'
 import { useLessonStore } from '../../store/lessonStore'
+import { useAuthStore } from '../../store/authStore'
+import { useModulesStore } from '../../store/modulesStore'
 import FillInBlanks from './FillInBlanks'
 import MCQQuiz from './MCQQuiz'
 import DebugChallenge from './DebugChallenge'
@@ -80,6 +82,8 @@ function CompletionScreen({ lesson, onNext }: { lesson: LessonDetail; onNext: ()
 
 export default function ExerciseRouter({ lesson, onAllDone }: Props) {
   const { currentExerciseIndex, setExerciseIndex } = useLessonStore()
+  const { refreshUser } = useAuthStore()
+  const { refresh: refreshModules } = useModulesStore()
   const exercises = lesson.exercises
   const [lastResult, setLastResult] = useState<{ passed: boolean; feedback: string; xp: number } | null>(null)
 
@@ -92,11 +96,13 @@ export default function ExerciseRouter({ lesson, onAllDone }: Props) {
   const handleResult = (passed: boolean, feedback: string, xp: number) => {
     setLastResult({ passed, feedback, xp })
     if (passed) {
+      // Refresh XP bar and module progress bar after earning XP
+      refreshUser().catch(() => {})
+      refreshModules().catch(() => {})
       setTimeout(() => {
         setLastResult(null)
-        if (currentExerciseIndex < exercises.length - 1) {
-          setExerciseIndex(currentExerciseIndex + 1)
-        }
+        // Always advance — going past the last index shows the CompletionScreen
+        setExerciseIndex(currentExerciseIndex + 1)
       }, 2000)
     }
   }

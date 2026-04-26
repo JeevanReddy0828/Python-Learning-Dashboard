@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { useUIStore } from '../store/uiStore'
 import { useGamificationStore } from '../store/gamificationStore'
-import { modulesApi, streaksApi } from '../api'
-import type { Module } from '../types'
+import { useModulesStore } from '../store/modulesStore'
+import { streaksApi } from '../api'
 import XPBar from '../components/gamification/XPBar'
 import StreakCounter from '../components/gamification/StreakCounter'
 import ConfettiCelebration from '../components/gamification/ConfettiCelebration'
@@ -25,12 +25,12 @@ export default function RootLayout() {
   const { user, logout } = useAuthStore()
   const { darkMode, focusMode, sidebarOpen, toggleDarkMode, toggleFocusMode, setSidebarOpen } = useUIStore()
   const { setXP } = useGamificationStore()
-  const [modules, setModules] = useState<Module[]>([])
+  const { modules, refresh: refreshModules } = useModulesStore()
   const [streak, setStreak] = useState(0)
   const navigate = useNavigate()
 
   useEffect(() => {
-    modulesApi.list().then((r) => setModules(r.data)).catch(() => {})
+    refreshModules()
     streaksApi.checkIn().then((r) => setStreak(r.data.streak.current_streak)).catch(() => {})
   }, [])
 

@@ -35,7 +35,10 @@ export const useGamificationStore = create<GamificationStore>((set) => ({
 
   addXPEvent: (amount, reason) => {
     const id = Math.random().toString(36).slice(2)
-    set((s) => ({ pendingXPEvents: [...s.pendingXPEvents, { id, amount, reason }] }))
+    set((s) => ({
+      xp: s.xp + amount,
+      pendingXPEvents: [...s.pendingXPEvents, { id, amount, reason }],
+    }))
     setTimeout(() => {
       set((s) => ({ pendingXPEvents: s.pendingXPEvents.filter((e) => e.id !== id) }))
     }, 1500)
