@@ -1,6 +1,6 @@
 import uuid
 from pydantic import BaseModel, ConfigDict
-from app.schemas.exercise import ExerciseSummary
+from app.schemas.exercise import ExerciseDetail
 from app.schemas.achievement import AchievementRead
 
 
@@ -18,7 +18,7 @@ class LessonDetail(BaseModel):
     estimated_min: int
     xp_reward: int
     order_index: int
-    exercises: list[ExerciseSummary] = []
+    exercises: list[ExerciseDetail] = []
     status: str = "not_started"
 
 

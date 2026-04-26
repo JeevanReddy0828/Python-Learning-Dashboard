@@ -11,7 +11,7 @@ from app.models.lesson import Lesson
 from app.models.exercise import Exercise
 from app.models.progress import UserLessonProgress, UserExerciseProgress
 from app.schemas.lesson import LessonDetail, LessonCompleteRequest, LessonCompleteResponse
-from app.schemas.exercise import ExerciseSummary
+from app.schemas.exercise import ExerciseDetail
 from app.services.gamification_service import award_xp, check_and_award_achievements
 
 router = APIRouter()
@@ -48,10 +48,14 @@ async def get_lesson(
                 UserExerciseProgress.exercise_id == ex.id,
             )
         )
-        exercise_summaries.append(ExerciseSummary(
+        exercise_summaries.append(ExerciseDetail(
             id=ex.id, type=ex.type, title=ex.title,
             xp_reward=ex.xp_reward, order_index=ex.order_index,
             status=ep.status if ep else "not_started",
+            instructions=ex.instructions,
+            starter_code=ex.starter_code,
+            hints=ex.hints or [],
+            options=ex.options,
         ))
 
     return LessonDetail(
