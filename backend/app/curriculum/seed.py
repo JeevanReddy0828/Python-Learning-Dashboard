@@ -43,7 +43,7 @@ async def seed_modules(db: AsyncSession):
 
 async def seed_lessons(db: AsyncSession):
     data = json.loads((DATA_DIR / "lessons.json").read_text())
-    count = 0
+    created = updated = 0
     for l in data:
         module_slug = l.pop("module_slug")
         module = await db.scalar(select(Module).where(Module.slug == module_slug))
@@ -55,9 +55,13 @@ async def seed_lessons(db: AsyncSession):
         )
         if not existing:
             db.add(Lesson(module_id=module.id, **l))
-            count += 1
+            created += 1
+        else:
+            for key, value in l.items():
+                setattr(existing, key, value)
+            updated += 1
     await db.commit()
-    print(f"  Seeded {count} lessons")
+    print(f"  Seeded {created} new lessons, updated {updated}")
 
 
 async def seed_exercises(db: AsyncSession):

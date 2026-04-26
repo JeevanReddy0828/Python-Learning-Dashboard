@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker compose *)"
+      "Bash(docker compose *)",
+      "Bash(python -c \"import json; json.loads\\(open\\('backend/app/curriculum/data/lessons.json', encoding='utf-8'\\).read\\(\\)\\); print\\('Valid JSON'\\)\")",
+      "Bash(python -c \"import json; data=json.load\\(open\\('backend/app/curriculum/data/lessons.json'\\)\\); print\\('\\\\n'.join\\([l['slug'] for l in data]\\)\\)\")",
+      "Bash(python -c \"import json; data=json.load\\(open\\('backend/app/curriculum/data/lessons.json', encoding='utf-8'\\)\\); print\\('\\\\n'.join\\([l['slug'] for l in data]\\)\\)\")"
     ]
   }
 }
