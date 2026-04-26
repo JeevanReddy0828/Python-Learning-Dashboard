@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { LessonDetail, ExecutionResult } from '../types'
 
-type AIPanelMode = 'hint' | 'review' | 'explain' | 'chat' | null
+type AIPanelMode = 'hint' | 'review' | 'explain' | 'chat' | 'socratic' | null
 
 interface LessonStore {
   currentLesson: LessonDetail | null

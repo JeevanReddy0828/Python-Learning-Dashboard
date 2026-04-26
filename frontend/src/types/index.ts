@@ -107,7 +107,7 @@ export interface LessonDetail {
   estimated_min: number
   xp_reward: number
   order_index: number
-  exercises: ExerciseSummary[]
+  exercises: ExerciseDetail[]
   status: 'not_started' | 'in_progress' | 'completed'
 }
 

@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { to: '/modules', icon: '📚', label: 'Learn' },
   { to: '/achievements', icon: '🏆', label: 'Achievements' },
   { to: '/daily', icon: '⚡', label: 'Daily Challenge' },
+  { to: '/learning-tools', icon: '🧠', label: 'Learning Tools' },
   { to: '/profile', icon: '👤', label: 'Profile' },
 ]
 

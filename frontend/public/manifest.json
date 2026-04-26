@@ -1,0 +1,26 @@
+{
+  "name": "PyLearn — ADHD Python Dashboard",
+  "short_name": "PyLearn",
+  "description": "An ADHD-friendly interactive Python learning platform with gamification, AI help, and in-browser code execution.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF9",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": []
+}
