@@ -1,0 +1,278 @@
+[
+  {
+    "lesson_slug": "what-is-a-variable",
+    "type": "fill_blank",
+    "title": "Create Your First Variable",
+    "instructions": "Fill in the blank to create a variable called `age` with the value 25, then print it.",
+    "starter_code": "_____ = 25\nprint(age)",
+    "solution_code": "age = 25\nprint(age)",
+    "hints": [
+      "The variable name goes on the LEFT side of the equals sign.",
+      "Variable names can't have spaces or start with a number.",
+      "The answer is simply: age = 25"
+    ],
+    "test_cases": [{"input": "", "expected_output": "25"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "what-is-a-variable",
+    "type": "mcq",
+    "title": "Variable Naming Rules",
+    "instructions": "Which of these is a valid Python variable name?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": ["Variable names cannot start with a digit.", "Hyphens (-) are not allowed — use underscores instead.", "Python reserved words (like 'class') can't be variable names."],
+    "test_cases": null,
+    "options": [
+      {"label": "2fast", "is_correct": false},
+      {"label": "my_speed", "is_correct": true},
+      {"label": "my-speed", "is_correct": false},
+      {"label": "class", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "what-is-a-variable",
+    "type": "debug",
+    "title": "Fix the Bug",
+    "instructions": "This code has a bug. Fix it so it prints the user's name correctly.",
+    "starter_code": "user name = 'Bob'\nprint(user name)",
+    "solution_code": "user_name = 'Bob'\nprint(user_name)",
+    "hints": [
+      "Look carefully at the variable name — can it have a space?",
+      "Python variable names cannot contain spaces.",
+      "Replace the space in 'user name' with an underscore: user_name"
+    ],
+    "test_cases": [{"input": "", "expected_output": "Bob"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "data-types-basics",
+    "type": "mcq",
+    "title": "What Type Is This?",
+    "instructions": "What is the data type of the value `3.14`?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": ["Is 3.14 a whole number?", "It has a decimal point.", "Numbers with decimal points are called floats."],
+    "test_cases": null,
+    "options": [
+      {"label": "int", "is_correct": false},
+      {"label": "float", "is_correct": true},
+      {"label": "str", "is_correct": false},
+      {"label": "bool", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "data-types-basics",
+    "type": "fill_blank",
+    "title": "Convert a String to an Integer",
+    "instructions": "The variable `age_str` contains '30' as a string. Convert it to an integer and print it.",
+    "starter_code": "age_str = '30'\nage = _____(age_str)\nprint(age + 1)",
+    "solution_code": "age_str = '30'\nage = int(age_str)\nprint(age + 1)",
+    "hints": ["You need to call a built-in function to convert the string.", "The function that converts to integer is called 'int'.", "Use: age = int(age_str)"],
+    "test_cases": [{"input": "", "expected_output": "31"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "string-power",
+    "type": "fill_blank",
+    "title": "Build a Greeting with f-strings",
+    "instructions": "Complete the code to print: `Hello, Alice! You are 25 years old.`",
+    "starter_code": "name = 'Alice'\nage = 25\nprint(f'Hello, _____! You are _____ years old.')",
+    "solution_code": "name = 'Alice'\nage = 25\nprint(f'Hello, {name}! You are {age} years old.')",
+    "hints": ["f-strings use curly braces {} to embed variables.", "Put the variable name inside {} without quotes.", "Replace _____ with {name} and {age} respectively."],
+    "test_cases": [{"input": "", "expected_output": "Hello, Alice! You are 25 years old."}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "string-power",
+    "type": "debug",
+    "title": "Fix the String Concatenation",
+    "instructions": "Fix this code so it prints `Hello, World!`",
+    "starter_code": "greeting = 'Hello'\nname = 'World'\nprint(greeting + name)",
+    "solution_code": "greeting = 'Hello'\nname = 'World'\nprint(greeting + ', ' + name + '!')",
+    "hints": ["The output is missing a comma, space, and exclamation mark.", "You need to add ', ' and '!' when concatenating.", "Try: greeting + ', ' + name + '!'"],
+    "test_cases": [{"input": "", "expected_output": "Hello, World!"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "variables-practice",
+    "type": "mini_project",
+    "title": "Name Card Generator",
+    "instructions": "Write a program that prints a formatted name card. Use the variables name='Alice Smith' and age=25. The output should look like:\n```\n============================\n      ALICE SMITH      \n         Age: 25       \n============================\n```",
+    "starter_code": "name = 'Alice Smith'\nage = 25\n\n# Your code here:\n# 1. Create the border line (use '=' repeated 28 times)\n# 2. Print the name in UPPERCASE, centered in 28 chars\n# 3. Print the age centered in 28 chars  \n# 4. Print the border line again\n",
+    "solution_code": "name = 'Alice Smith'\nage = 25\nborder = '=' * 28\nprint(border)\nprint(name.upper().center(28))\nprint(f'Age: {age}'.center(28))\nprint(border)",
+    "hints": [
+      "Use '=' * 28 to repeat the equals sign 28 times.",
+      "Use .upper() to capitalize and .center(28) to center text.",
+      "Use f'Age: {age}' to format the age line, then .center(28) on it."
+    ],
+    "test_cases": [{"input": "", "expected_output": "============================\n      ALICE SMITH      \n         Age: 25       \n============================"}],
+    "options": null,
+    "xp_reward": 30,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "if-else-basics",
+    "type": "mcq",
+    "title": "Which Operator Checks Equality?",
+    "instructions": "Which operator checks if two values are equal in Python?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": ["In Python, = is for assignment. Checking equality uses a different symbol.", "It uses two characters."],
+    "test_cases": null,
+    "options": [
+      {"label": "=", "is_correct": false},
+      {"label": "==", "is_correct": true},
+      {"label": "===", "is_correct": false},
+      {"label": "eq", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "if-else-basics",
+    "type": "fill_blank",
+    "title": "Grade Checker",
+    "instructions": "Complete the code to print 'Pass' if score >= 60, otherwise print 'Fail'.",
+    "starter_code": "score = 75\n\n_____ score >= 60:\n    print('Pass')\n_____:\n    print('Fail')",
+    "solution_code": "score = 75\n\nif score >= 60:\n    print('Pass')\nelse:\n    print('Fail')",
+    "hints": ["The first blank is the keyword that starts a condition check.", "Use 'if' and 'else'.", "Replace the blanks with: if ... else"],
+    "test_cases": [{"input": "", "expected_output": "Pass"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "if-else-basics",
+    "type": "debug",
+    "title": "Fix the Temperature Checker",
+    "instructions": "This code should print 'Hot' if temp > 30, 'Warm' if temp > 20, else 'Cold'. Fix the bug.",
+    "starter_code": "temp = 25\n\nif temp > 20:\n    print('Warm')\nelif temp > 30:\n    print('Hot')\nelse:\n    print('Cold')",
+    "solution_code": "temp = 25\n\nif temp > 30:\n    print('Hot')\nelif temp > 20:\n    print('Warm')\nelse:\n    print('Cold')",
+    "hints": [
+      "The conditions are in the wrong order — more specific conditions should come first.",
+      "If temp=35, which branch does the current code take?",
+      "Check values from highest to lowest: > 30 first, then > 20."
+    ],
+    "test_cases": [{"input": "", "expected_output": "Warm"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "for-loops",
+    "type": "fill_blank",
+    "title": "Sum of Numbers",
+    "instructions": "Complete the code to calculate the sum of numbers from 1 to 5 using a for loop. Expected output: 15",
+    "starter_code": "total = 0\nfor i in _____(1, 6):\n    total _____ i\nprint(total)",
+    "solution_code": "total = 0\nfor i in range(1, 6):\n    total += i\nprint(total)",
+    "hints": [
+      "The function that generates a sequence of numbers is range().",
+      "To add i to total, use the += operator.",
+      "Use: for i in range(1, 6) and total += i"
+    ],
+    "test_cases": [{"input": "", "expected_output": "15"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "what-is-a-function",
+    "type": "fill_blank",
+    "title": "Write Your First Function",
+    "instructions": "Complete the function that multiplies two numbers and returns the result. It should print 12 when called with multiply(3, 4).",
+    "starter_code": "_____ multiply(a, b):\n    _____ a * b\n\nprint(multiply(3, 4))",
+    "solution_code": "def multiply(a, b):\n    return a * b\n\nprint(multiply(3, 4))",
+    "hints": [
+      "Functions are defined with the 'def' keyword.",
+      "Use 'return' to send back the result.",
+      "Replace blanks with: def ... return"
+    ],
+    "test_cases": [{"input": "", "expected_output": "12"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "what-is-a-function",
+    "type": "debug",
+    "title": "Fix the Broken Function",
+    "instructions": "This function should return the square of a number (e.g., square(5) should return 25). Fix the bug.",
+    "starter_code": "def square(n):\n    result = n * n\n\nprint(square(5))",
+    "solution_code": "def square(n):\n    result = n * n\n    return result\n\nprint(square(5))",
+    "hints": [
+      "The function calculates the result but never sends it back to the caller.",
+      "A function needs a 'return' statement to give back a value.",
+      "Add 'return result' inside the function."
+    ],
+    "test_cases": [{"input": "", "expected_output": "25"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "lists-basics",
+    "type": "fill_blank",
+    "title": "Add to a List",
+    "instructions": "Add 'mango' to the end of the fruits list, then print the length of the list.",
+    "starter_code": "fruits = ['apple', 'banana', 'cherry']\nfruits._____(  'mango')\nprint(len(fruits))",
+    "solution_code": "fruits = ['apple', 'banana', 'cherry']\nfruits.append('mango')\nprint(len(fruits))",
+    "hints": [
+      "To add an item to the end of a list, use a list method.",
+      "The method is called append().",
+      "Use: fruits.append('mango')"
+    ],
+    "test_cases": [{"input": "", "expected_output": "4"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "classes-and-objects",
+    "type": "fill_blank",
+    "title": "Create a Car Class",
+    "instructions": "Complete the Car class with a make and model, and a describe() method that prints 'This is a Toyota Camry'.",
+    "starter_code": "_____ Car:\n    def _____(self, make, model):\n        self.make = make\n        self.model = model\n\n    def describe(self):\n        print(f'This is a {self.make} {self.model}')\n\nmy_car = Car('Toyota', 'Camry')\nmy_car.describe()",
+    "solution_code": "class Car:\n    def __init__(self, make, model):\n        self.make = make\n        self.model = model\n\n    def describe(self):\n        print(f'This is a {self.make} {self.model}')\n\nmy_car = Car('Toyota', 'Camry')\nmy_car.describe()",
+    "hints": [
+      "Classes are defined with the 'class' keyword.",
+      "The constructor method is called __init__ (two underscores on each side).",
+      "Replace blanks with: class ... __init__"
+    ],
+    "test_cases": [{"input": "", "expected_output": "This is a Toyota Camry"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "number-guessing-game",
+    "type": "mini_project",
+    "title": "Build the Number Guessing Game",
+    "instructions": "Build a complete number guessing game. Since we can't use input() in tests, hardcode the guesses as a list and simulate the game loop. Use secret_number = 42 and guesses = [20, 60, 42]. Print 'Too low!', 'Too high!', or 'Correct! You got it in X guesses!'",
+    "starter_code": "import random\n\nsecret_number = 42\nguesses = [20, 60, 42]  # simulated guesses\nattempts = 0\n\nfor guess in guesses:\n    attempts += 1\n    # Your if/elif/else logic here:\n    pass\n",
+    "solution_code": "import random\n\nsecret_number = 42\nguesses = [20, 60, 42]\nattempts = 0\n\nfor guess in guesses:\n    attempts += 1\n    if guess < secret_number:\n        print('Too low!')\n    elif guess > secret_number:\n        print('Too high!')\n    else:\n        print(f'Correct! You got it in {attempts} guesses!')\n        break",
+    "hints": [
+      "Use if/elif/else to compare each guess to secret_number.",
+      "If guess < secret_number, print 'Too low!'. If guess > secret_number, print 'Too high!'.",
+      "When guess == secret_number, print the success message and break out of the loop."
+    ],
+    "test_cases": [{"input": "", "expected_output": "Too low!\nToo high!\nCorrect! You got it in 3 guesses!"}],
+    "options": null,
+    "xp_reward": 50,
+    "order_index": 1
+  }
+]

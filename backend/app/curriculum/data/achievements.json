@@ -1,0 +1,15 @@
+[
+  {"slug": "first-step", "title": "First Step", "description": "Complete your very first lesson", "icon": "🐣", "xp_reward": 25, "trigger_type": "lessons_completed", "trigger_value": 1},
+  {"slug": "code-breaker", "title": "Code Breaker", "description": "Pass your first coding exercise", "icon": "💥", "xp_reward": 25, "trigger_type": "exercises_completed", "trigger_value": 1},
+  {"slug": "on-fire", "title": "On Fire 🔥", "description": "Maintain a 3-day learning streak", "icon": "🔥", "xp_reward": 50, "trigger_type": "streak", "trigger_value": 3},
+  {"slug": "week-warrior", "title": "Week Warrior", "description": "Maintain a 7-day learning streak", "icon": "⚔️", "xp_reward": 100, "trigger_type": "streak", "trigger_value": 7},
+  {"slug": "lesson-5", "title": "Getting Started", "description": "Complete 5 lessons", "icon": "📚", "xp_reward": 50, "trigger_type": "lessons_completed", "trigger_value": 5},
+  {"slug": "lesson-10", "title": "Dedicated Learner", "description": "Complete 10 lessons", "icon": "🎓", "xp_reward": 100, "trigger_type": "lessons_completed", "trigger_value": 10},
+  {"slug": "xp-100", "title": "Century Club", "description": "Earn 100 XP total", "icon": "💯", "xp_reward": 10, "trigger_type": "xp_threshold", "trigger_value": 100},
+  {"slug": "xp-500", "title": "XP Collector", "description": "Earn 500 XP total", "icon": "⭐", "xp_reward": 25, "trigger_type": "xp_threshold", "trigger_value": 500},
+  {"slug": "xp-1000", "title": "Four Figures", "description": "Earn 1000 XP total", "icon": "🏆", "xp_reward": 50, "trigger_type": "xp_threshold", "trigger_value": 1000},
+  {"slug": "exercise-5", "title": "Exercise Enthusiast", "description": "Pass 5 exercises", "icon": "💪", "xp_reward": 50, "trigger_type": "exercises_completed", "trigger_value": 5},
+  {"slug": "exercise-10", "title": "Bug Slayer", "description": "Pass 10 exercises", "icon": "🦸", "xp_reward": 75, "trigger_type": "exercises_completed", "trigger_value": 10},
+  {"slug": "level-2", "title": "Level Up!", "description": "Reach Level 2", "icon": "⬆️", "xp_reward": 30, "trigger_type": "level", "trigger_value": 2},
+  {"slug": "level-5", "title": "Pythonista", "description": "Reach Level 5", "icon": "🐍", "xp_reward": 100, "trigger_type": "level", "trigger_value": 5}
+]

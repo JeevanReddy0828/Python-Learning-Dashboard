@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "variables-and-types",
+    "title": "Variables & Data Types",
+    "description": "Learn to store and label information in Python — the building blocks of every program.",
+    "icon": "📦",
+    "order_index": 1
+  },
+  {
+    "slug": "control-flow",
+    "title": "Control Flow",
+    "description": "Make decisions and repeat actions with if/else and loops.",
+    "icon": "🔀",
+    "order_index": 2
+  },
+  {
+    "slug": "functions",
+    "title": "Functions",
+    "description": "Package your code into reusable, named blocks that do one job well.",
+    "icon": "🔧",
+    "order_index": 3
+  },
+  {
+    "slug": "data-structures",
+    "title": "Lists, Dicts & Sets",
+    "description": "Organize and work with collections of data efficiently.",
+    "icon": "🗂️",
+    "order_index": 4
+  },
+  {
+    "slug": "oop",
+    "title": "Object-Oriented Programming",
+    "description": "Model the real world with classes, objects, and methods.",
+    "icon": "🏗️",
+    "order_index": 5
+  },
+  {
+    "slug": "file-io-and-errors",
+    "title": "Files & Error Handling",
+    "description": "Read and write files, and handle things going wrong gracefully.",
+    "icon": "📁",
+    "order_index": 6
+  },
+  {
+    "slug": "apis-and-web",
+    "title": "APIs & The Web",
+    "description": "Connect your Python programs to the internet using APIs.",
+    "icon": "🌐",
+    "order_index": 7
+  },
+  {
+    "slug": "projects",
+    "title": "Real Projects",
+    "description": "Put everything together and build things you can show to people.",
+    "icon": "🚀",
+    "order_index": 8
+  }
+]
