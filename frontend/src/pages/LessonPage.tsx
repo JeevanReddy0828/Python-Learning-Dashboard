@@ -40,6 +40,27 @@ export default function LessonPage() {
     return () => clearTimeout(t)
   }, [lessonId])
 
+  async function handleAllDone() {
+    if (!lessonId || !lesson) return
+    const timeSpent = Math.round((Date.now() - startTime.current) / 1000)
+    try {
+      const res = await lessonsApi.complete(lessonId, timeSpent)
+      const data = res.data
+      if (data.xp_gained > 0) {
+        addXPEvent(data.xp_gained, 'Lesson complete!')
+        triggerConfetti(data.level_up ? 'large' : 'medium')
+        toast.success(`Lesson complete! +${data.xp_gained} XP 🎉`)
+      }
+      if (data.level_up) toast.success(`Level up! You're now Level ${data.new_level} ⬆️`, { duration: 5000 })
+    } catch { /* already completed */ }
+
+    if (lesson.next_lesson_id) {
+      navigate(`/lessons/${lesson.next_lesson_id}`)
+    } else {
+      navigate('/modules')
+    }
+  }
+
   async function handleCompleteLesson() {
     if (!lessonId || !lesson) return
     const timeSpent = Math.round((Date.now() - startTime.current) / 1000)
@@ -114,7 +135,7 @@ export default function LessonPage() {
               </div>
             </div>
           ) : (
-            <ExerciseRouter lesson={lesson} />
+            <ExerciseRouter lesson={lesson} onAllDone={handleAllDone} />
           )}
         </div>
       </div>

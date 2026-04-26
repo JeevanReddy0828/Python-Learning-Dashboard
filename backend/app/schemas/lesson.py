@@ -20,6 +20,8 @@ class LessonDetail(BaseModel):
     order_index: int
     exercises: list[ExerciseDetail] = []
     status: str = "not_started"
+    next_lesson_id: uuid.UUID | None = None
+    next_lesson_title: str | None = None
 
 
 class LessonCompleteRequest(BaseModel):

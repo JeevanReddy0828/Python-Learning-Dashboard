@@ -32,6 +32,13 @@ async def get_lesson(
     )
     exercises = exercises_result.scalars().all()
 
+    next_lesson = await db.scalar(
+        select(Lesson).where(
+            Lesson.module_id == lesson.module_id,
+            Lesson.order_index > lesson.order_index,
+        ).order_by(Lesson.order_index).limit(1)
+    )
+
     lp = await db.scalar(
         select(UserLessonProgress).where(
             UserLessonProgress.user_id == current_user.id,
@@ -70,6 +77,8 @@ async def get_lesson(
         order_index=lesson.order_index,
         exercises=exercise_summaries,
         status=lesson_status,
+        next_lesson_id=next_lesson.id if next_lesson else None,
+        next_lesson_title=next_lesson.title if next_lesson else None,
     )
 
 

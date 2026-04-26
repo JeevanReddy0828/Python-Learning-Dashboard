@@ -80,10 +80,10 @@ async def submit_exercise(
         )
     )
     if not ep:
-        ep = UserExerciseProgress(user_id=current_user.id, exercise_id=exercise_id)
+        ep = UserExerciseProgress(user_id=current_user.id, exercise_id=exercise_id, attempts=0)
         db.add(ep)
 
-    ep.attempts += 1
+    ep.attempts = (ep.attempts or 0) + 1
     stdout = stderr = ""
     passed = False
     feedback = ""

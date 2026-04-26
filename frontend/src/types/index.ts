@@ -109,6 +109,8 @@ export interface LessonDetail {
   order_index: number
   exercises: ExerciseDetail[]
   status: 'not_started' | 'in_progress' | 'completed'
+  next_lesson_id: string | null
+  next_lesson_title: string | null
 }
 
 // Exercise submission
