@@ -18,8 +18,7 @@ def _model() -> str:
 
 
 def _supports_json_mode() -> bool:
-    """NVIDIA NIM models don't all support response_format=json_object."""
-    return settings.ai_provider == "openai"
+    return settings.ai_supports_json_mode
 
 
 async def get_hint(code: str, exercise_title: str, hint_level: int) -> str:

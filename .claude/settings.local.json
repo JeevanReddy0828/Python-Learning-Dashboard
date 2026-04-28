@@ -9,7 +9,8 @@
       "Bash(npm install *)",
       "Bash(docker -H npipe:////./pipe/docker_engine ps --format \"table {{.Names}}\\\\t{{.Status}}\")",
       "Bash(pip show *)",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(python -c ' *)"
     ]
   }
 }
