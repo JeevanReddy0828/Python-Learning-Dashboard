@@ -4,6 +4,7 @@ import { usersApi } from '../api'
 import type { UserStats } from '../types'
 import XPBar from '../components/gamification/XPBar'
 import SkillRadarChart from '../components/dashboard/SkillRadarChart'
+import NotionExport from '../components/profile/NotionExport'
 
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user)
@@ -57,6 +58,8 @@ export default function ProfilePage() {
         <h2 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Skills Radar</h2>
         <SkillRadarChart />
       </div>
+
+      <NotionExport />
     </div>
   )
 }

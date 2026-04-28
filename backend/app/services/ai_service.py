@@ -97,27 +97,37 @@ async def explain_code(code: str) -> ExplainResponse:
     return ExplainResponse(lines=lines)
 
 
-async def chat(message: str, context_code: str = "", lesson_title: str = "") -> str:
-    system = (
-        "You are an ADHD-friendly Python tutor named Pybot. "
-        "Be concise, warm, and never overwhelming. "
-        "Use bullet points and short sentences. "
-        "When showing code, always include a brief explanation."
-    )
-    if lesson_title:
-        system += f" The student's current lesson: {lesson_title}."
-
-    user_msg = message
-    if context_code:
-        user_msg += f"\n\nMy current code:\n```python\n{context_code}\n```"
-
-    response = await client.chat.completions.create(
-        model=settings.openai_model,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user_msg},
-        ],
-        max_tokens=500,
-        temperature=0.7,
-    )
-    return response.choices[0].message.content.strip()
+async def chat(
+    message: str,
+    context_code: str = "",
+    lesson_title: str = "",
+    user_id: str = "anonymous",
+) -> str:
+    """Stateful chat via LangGraph agent (falls back to direct OpenAI if LangGraph fails)."""
+    try:
+        from app.services.ai_agent import agent_chat
+        return await agent_chat(
+            user_id=user_id,
+            message=message,
+            context_code=context_code,
+            lesson_title=lesson_title,
+        )
+    except Exception:
+        # simple fallback
+        system = (
+            "You are an ADHD-friendly Python tutor. "
+            "Be concise, use bullet points, max 3 sentences."
+        )
+        user_msg = message
+        if context_code:
+            user_msg += f"\n\nCode:\n```python\n{context_code}\n```"
+        response = await client.chat.completions.create(
+            model=settings.openai_model,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_msg},
+            ],
+            max_tokens=500,
+            temperature=0.7,
+        )
+        return response.choices[0].message.content.strip()

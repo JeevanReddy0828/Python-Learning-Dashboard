@@ -8,6 +8,7 @@ import StatsGrid from '../components/dashboard/StatsGrid'
 import WeakAreasPanel from '../components/dashboard/WeakAreasPanel'
 import ModuleCard from '../components/curriculum/ModuleCard'
 import XPBar from '../components/gamification/XPBar'
+import Leaderboard from '../components/dashboard/Leaderboard'
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user)
@@ -81,8 +82,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Weak areas */}
-      <WeakAreasPanel />
+      {/* Leaderboard + Weak areas side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Leaderboard />
+        <WeakAreasPanel />
+      </div>
     </div>
   )
 }

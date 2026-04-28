@@ -45,5 +45,6 @@ async def chat(payload: ChatRequest, current_user: User = Depends(get_current_us
         payload.message,
         payload.context_code or "",
         payload.lesson_title or "",
+        user_id=str(current_user.id),
     )
     return ChatResponse(response=response)

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import auth, users, modules, lessons, exercises, progress, achievements, streaks, code_execution, ai
+from app.routers import auth, users, modules, lessons, exercises, progress, achievements, streaks, code_execution, ai, leaderboard, export
 
 
 def create_app() -> FastAPI:
@@ -32,6 +32,8 @@ def create_app() -> FastAPI:
     app.include_router(streaks.router, prefix=f"{prefix}/streaks", tags=["streaks"])
     app.include_router(code_execution.router, prefix=f"{prefix}/code", tags=["code"])
     app.include_router(ai.router, prefix=f"{prefix}/ai", tags=["ai"])
+    app.include_router(leaderboard.router, prefix=f"{prefix}/leaderboard", tags=["leaderboard"])
+    app.include_router(export.router, prefix=f"{prefix}/export", tags=["export"])
 
     @app.get("/api/health")
     async def health():

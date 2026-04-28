@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "pylearn-tutor": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "E:\\projects\\python-adhd dashboard\\backend",
+      "env": {}
+    }
+  }
+}

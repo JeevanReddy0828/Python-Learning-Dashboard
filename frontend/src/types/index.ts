@@ -171,3 +171,12 @@ export interface ExecutionResult {
   execution_time: number
   timed_out: boolean
 }
+
+// Leaderboard
+export interface LeaderboardEntry {
+  rank: number
+  user_id: string
+  display_name: string
+  xp: number
+  is_me: boolean
+}

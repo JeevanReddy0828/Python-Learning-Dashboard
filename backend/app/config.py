@@ -13,6 +13,17 @@ class Settings(BaseSettings):
     max_hint_level: int = 3
     cors_origins: List[str] = ["http://localhost:5173"]
 
+    # Redis
+    redis_url: str = "redis://localhost:6379"
+
+    # Supabase (optional — realtime presence + storage)
+    supabase_url: str = ""
+    supabase_anon_key: str = ""
+
+    # Notion (optional — progress export)
+    notion_token: str = ""
+    notion_database_id: str = ""
+
     class Config:
         env_file = ".env"
 

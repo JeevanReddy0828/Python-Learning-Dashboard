@@ -9,6 +9,7 @@ from app.models.module import Module
 from app.models.lesson import Lesson
 from app.models.progress import UserLessonProgress
 from app.schemas.module import ModuleRead, ModuleDetail, LessonSummary
+from app.services import cache_service
 
 router = APIRouter()
 
@@ -28,6 +29,11 @@ async def list_modules(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    cache_key = f"modules:{current_user.id}"
+    cached = await cache_service.cache_get(cache_key)
+    if cached:
+        return cached
+
     result = await db.execute(
         select(Module).where(Module.is_published == True).order_by(Module.order_index)
     )
@@ -49,6 +55,8 @@ async def list_modules(
             description=mod.description, icon=mod.icon, order_index=mod.order_index,
             lesson_count=lesson_count, completion_percent=pct,
         ))
+
+    await cache_service.cache_set(cache_key, [m.model_dump() for m in out], ttl=120)
     return out
 
 

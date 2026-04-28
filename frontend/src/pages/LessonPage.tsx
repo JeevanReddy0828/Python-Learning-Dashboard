@@ -7,6 +7,7 @@ import LessonContent from '../components/curriculum/LessonContent'
 import ExerciseRouter from '../components/exercises/ExerciseRouter'
 import AIPanel from '../components/ai/AIPanel'
 import MicroWin from '../components/adhd/MicroWin'
+import StudyingNow from '../components/curriculum/StudyingNow'
 import { useGamificationStore } from '../store/gamificationStore'
 import { useModulesStore } from '../store/modulesStore'
 import toast from 'react-hot-toast'
@@ -99,7 +100,8 @@ export default function LessonPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {lesson.slug && <StudyingNow lessonSlug={lesson.slug} />}
             <button
               onClick={() => setView('lesson')}
               className={`btn text-sm px-4 py-1.5 ${view === 'lesson' ? 'btn-primary' : 'btn-ghost'}`}

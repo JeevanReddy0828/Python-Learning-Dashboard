@@ -13,3 +13,17 @@ openai==1.30.1
 httpx==0.27.0
 python-dotenv==1.0.1
 slowapi==0.1.9
+
+# Redis — caching + leaderboard
+redis[asyncio]==5.0.4
+
+# LangGraph — stateful AI tutor agent
+langgraph==0.1.19
+langchain-openai==0.1.8
+langchain-core==0.2.7
+
+# Notion — progress export
+notion-client==2.2.1
+
+# MCP server — exposes curriculum to Claude Code and AI clients
+mcp==1.27.0

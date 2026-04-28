@@ -6,6 +6,7 @@ import type {
   WeeklyActivity, WeakArea, ProgressSummary,
   AchievementRead, StreakInfo,
   ReviewResponse, LineExplanation, ExecutionResult,
+  LeaderboardEntry,
 } from '../types'
 
 // Auth
@@ -83,4 +84,16 @@ export const aiApi = {
     apiClient.post<{ lines: LineExplanation[] }>('/ai/explain', { code }),
   chat: (message: string, context_code?: string, lesson_title?: string) =>
     apiClient.post<{ response: string }>('/ai/chat', { message, context_code, lesson_title }),
+}
+
+// Leaderboard (Redis-backed)
+export const leaderboardApi = {
+  top: () => apiClient.get<LeaderboardEntry[]>('/leaderboard'),
+  myRank: () => apiClient.get<{ rank: number | null; xp: number; display_name: string }>('/leaderboard/me'),
+  sync: () => apiClient.post('/leaderboard/sync'),
+}
+
+// Export
+export const exportApi = {
+  toNotion: () => apiClient.post<{ notion_url: string; message: string }>('/export/notion'),
 }
