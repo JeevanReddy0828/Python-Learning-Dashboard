@@ -8,6 +8,7 @@ export default function ModulesPage() {
   const [modules, setModules] = useState<ModuleDetail[]>([])
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -17,12 +18,15 @@ export default function ModulesPage() {
       )
       setModules(details)
       if (details.length > 0) setSelected(details[0].id)
+    }).catch((err) => {
+      setError(err?.response?.data?.detail || err?.message || 'Failed to load modules')
     }).finally(() => setLoading(false))
   }, [])
 
   const currentModule = modules.find((m) => m.id === selected)
 
   if (loading) return <div className="p-8 text-center text-gray-400">Loading curriculum...</div>
+  if (error) return <div className="p-8 text-center text-red-400">⚠️ {error}</div>
 
   return (
     <div className="flex h-full">

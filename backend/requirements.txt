@@ -1,29 +1,30 @@
-fastapi==0.111.0
+fastapi==0.115.0
 uvicorn[standard]==0.29.0
 sqlalchemy[asyncio]==2.0.30
 asyncpg==0.29.0
 alembic==1.13.1
-pydantic[email]==2.7.1
-pydantic-settings==2.2.1
+pydantic>=2.7.4
+pydantic[email]>=2.7.4
+pydantic-settings>=2.2.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart==0.0.9
-openai==1.30.1
-httpx==0.27.0
+httpx>=0.27.0
 python-dotenv==1.0.1
 slowapi==0.1.9
 
+# OpenAI + LangChain stack — let pip resolve compatible versions together
+openai>=1.54.0
+langchain-openai>=0.2.9
+langchain-core>=0.3.19
+langgraph>=0.2.28
+
 # Redis — caching + leaderboard
 redis[asyncio]==5.0.4
-
-# LangGraph — stateful AI tutor agent
-langgraph==0.1.19
-langchain-openai==0.1.8
-langchain-core==0.2.7
 
 # Notion — progress export
 notion-client==2.2.1
 
 # MCP server — exposes curriculum to Claude Code and AI clients
-mcp==1.27.0
+mcp>=1.0.0
