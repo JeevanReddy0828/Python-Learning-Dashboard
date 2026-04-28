@@ -33,7 +33,10 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://adhd:adhd_secret@db:5432/adhd_dashboard
       SECRET_KEY: change_this_in_production_use_openssl_rand_hex_32
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      NVIDIA_MODEL: ${NVIDIA_MODEL:-meta/llama-3.1-8b-instruct}
+      NVIDIA_BASE_URL: ${NVIDIA_BASE_URL:-https://integrate.api.nvidia.com/v1}
       REDIS_URL: redis://redis:6379
       SUPABASE_URL: ${SUPABASE_URL:-}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}

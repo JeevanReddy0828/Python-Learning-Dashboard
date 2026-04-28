@@ -97,12 +97,15 @@ class AgentState(TypedDict):
 # ── Graph nodes ───────────────────────────────────────────────────────────────
 
 def _make_llm():
-    return ChatOpenAI(
-        model=settings.openai_model,
-        api_key=settings.openai_api_key,
+    kwargs: dict = dict(
+        model=settings.ai_model,
+        api_key=settings.ai_api_key,
         temperature=0.7,
         max_tokens=600,
-    ).bind_tools(TOOLS)
+    )
+    if settings.ai_base_url:
+        kwargs["base_url"] = settings.ai_base_url
+    return ChatOpenAI(**kwargs).bind_tools(TOOLS)
 
 
 def agent_node(state: AgentState) -> dict:
@@ -221,9 +224,9 @@ async def agent_chat(
         logger.error("LangGraph agent error: %s", e)
         # Fallback to direct LLM call
         from openai import AsyncOpenAI
-        client = AsyncOpenAI(api_key=settings.openai_api_key)
+        client = AsyncOpenAI(api_key=settings.ai_api_key, base_url=settings.ai_base_url)
         resp = await client.chat.completions.create(
-            model=settings.openai_model,
+            model=settings.ai_model,
             messages=[{"role": "system", "content": _SYSTEM}, {"role": "user", "content": user_content}],
             max_tokens=500,
         )

@@ -10,7 +10,7 @@ A full-stack, ADHD-friendly Python learning platform. Micro-lessons (3–10 min)
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 async, asyncpg, Alembic |
 | Database | PostgreSQL 16 |
 | Cache / Leaderboard | Redis 7 (`redis[asyncio]`) |
-| AI tutor | LangGraph + langchain-openai → gpt-4o-mini |
+| AI tutor | LangGraph + langchain-openai → gpt-4o-mini **or** NVIDIA NIM (switchable via env) |
 | Code runner | Pyodide (in-browser, primary) + subprocess (backend fallback) |
 | Export | Notion API (`notion-client`) |
 | Frontend | React 18, Vite 5, TypeScript, TailwindCSS 3, Zustand |
@@ -279,6 +279,24 @@ Modules list is cached per user with a 2-min TTL. Any action that changes progre
 
 ### Change XP per level thresholds
 Edit `XP_PER_LEVEL` list in `backend/app/services/gamification_service.py`.
+
+### Switch AI provider (OpenAI ↔ NVIDIA NIM)
+The provider is determined by which key is set in `.env`. NVIDIA takes priority when `NVIDIA_API_KEY` is present.
+
+```bash
+# Use NVIDIA (free at https://build.nvidia.com/)
+NVIDIA_API_KEY=nvapi-...
+NVIDIA_MODEL=meta/llama-3.1-8b-instruct   # or any model from build.nvidia.com
+
+# Use OpenAI (comment out or remove NVIDIA_API_KEY)
+OPENAI_API_KEY=sk-...
+```
+
+The logic lives in `app/config.py` properties `ai_api_key`, `ai_model`, `ai_base_url`, `ai_provider`.
+`ai_service.py` and `ai_agent.py` both read from these — no other changes needed to switch.
+
+Note: NVIDIA models don't support `response_format=json_object`. The review and explain endpoints
+handle this by extracting JSON with regex instead.
 
 ### Extend the Leaderboard
 Redis sorted set key: `leaderboard:xp`. Member format: `{user_id}\x00{display_name}`. Scores are XP integers. `cache_service.leaderboard_upsert/get/rank` are the helpers.
