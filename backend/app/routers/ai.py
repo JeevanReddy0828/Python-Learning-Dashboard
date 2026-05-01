@@ -15,8 +15,8 @@ router = APIRouter()
 
 
 def _check_ai_configured():
-    if not settings.openai_api_key:
-        raise HTTPException(status_code=503, detail="AI features require OPENAI_API_KEY to be set")
+    if not settings.ai_api_key:
+        raise HTTPException(status_code=503, detail="AI features require an API key (OPENAI_API_KEY, NVIDIA_API_KEY, or ZAI_API_KEY)")
 
 
 @router.post("/hint", response_model=HintResponse)
