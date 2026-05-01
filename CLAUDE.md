@@ -1,7 +1,7 @@
 # PyLearn — ADHD Python Dashboard
 
 ## What this project is
-A full-stack, ADHD-friendly Python learning platform. Micro-lessons (3–10 min), in-browser code execution via Pyodide, LangGraph-powered AI tutor, gamification (XP, levels, streaks, leaderboard), and a full suite of learning tools.
+A full-stack, ADHD-friendly Python learning platform. Micro-lessons (3–10 min), in-browser code execution via Pyodide, LangGraph-powered AI tutor, gamification (XP, levels, streaks, leaderboard), persistent Memory Vault, Dev Tools suite, and session history for all learning tools.
 
 ## Full stack
 
@@ -33,7 +33,7 @@ docker compose up
 ### First-time env setup
 ```bash
 cp .env.example .env
-# Required: set OPENAI_API_KEY and a strong SECRET_KEY
+# Required: set OPENAI_API_KEY (or NVIDIA_API_KEY) and a strong SECRET_KEY
 # Optional: SUPABASE_URL, SUPABASE_ANON_KEY, NOTION_TOKEN, NOTION_DATABASE_ID
 ```
 
@@ -43,6 +43,11 @@ docker compose exec backend python -m app.curriculum.seed
 ```
 
 The seeder **upserts** lessons — safe to run repeatedly, content edits are applied.
+
+### Apply new Alembic migrations
+```bash
+docker compose exec backend alembic upgrade head
+```
 
 ### Backend only (without Docker)
 ```bash
@@ -66,18 +71,32 @@ cd backend
 python mcp_server.py   # stdio mode — Claude Code connects automatically via .claude/settings.json
 ```
 
+## Auto-commit hook
+A `Stop` hook in `.claude/settings.json` automatically commits all modified tracked files after every Claude response. It runs:
+```
+git add -u  →  git diff --cached  →  git commit -m "auto: YYYY-MM-DD HH:MM"
+```
+If there are no changes, it silently skips. To disable: remove the `"hooks"` block from `.claude/settings.json`.
+
 ## Directory map
 
 ```
 backend/
   mcp_server.py              ← Custom MCP server (5 tools + curriculum resources)
   requirements.txt
+  alembic/
+    versions/
+      001_initial_schema.py  ← base schema
+      002_memory_vault.py    ← memory_vault, chat_sessions, chat_messages tables
   app/
     main.py                  ← FastAPI app factory, all routers registered
-    config.py                ← Settings (reads .env): DB, Redis, Supabase, Notion, OpenAI
+    config.py                ← Settings (reads .env): DB, Redis, Supabase, Notion, AI provider chain
     database.py              ← Async engine + session
     deps.py                  ← get_current_user dependency
-    models/                  ← SQLAlchemy ORM (user, module, lesson, exercise, progress, achievement, streak)
+    models/
+      user.py                ← User ORM + relationships to memory_entries, chat_sessions
+      module.py / lesson.py / exercise.py / progress.py / achievement.py / streak.py
+      memory.py              ← MemoryVaultEntry, ChatSession, ChatMessage
     schemas/                 ← Pydantic v2 request/response models
     routers/
       auth.py                ← POST /register /login GET /me
@@ -89,9 +108,10 @@ backend/
       achievements.py        ← GET / /earned
       streaks.py             ← GET / POST /check-in
       code_execution.py      ← POST /run (sandboxed subprocess)
-      ai.py                  ← POST /hint /review /explain /chat
+      ai.py                  ← POST /hint /review /explain /chat (chat persists to DB + Redis)
       leaderboard.py         ← GET / (top 20), GET /me, POST /sync  ← Redis sorted set
       export.py              ← POST /notion  ← creates/updates Notion page
+      memory.py              ← Full CRUD for vault entries + session history (9 endpoints)
     services/
       auth_service.py        ← bcrypt + JWT
       gamification_service.py← XP/level/achievement logic
@@ -112,19 +132,24 @@ frontend/src/
     supabase.ts              ← Supabase client + joinPresence() helper (optional)
   api/index.ts               ← All API wrappers (authApi, modulesApi, lessonsApi, exercisesApi,
                                 progressApi, achievementsApi, streaksApi, codeApi, aiApi,
-                                leaderboardApi, exportApi)
-  types/index.ts             ← All TypeScript interfaces
+                                leaderboardApi, exportApi, memoryApi)
+  types/index.ts             ← All TypeScript interfaces (incl. MemoryEntry, ChatSessionSummary,
+                                ChatSessionDetail, ChatMessageRecord)
   store/
     authStore.ts             ← user, token, login/logout, refreshUser
     gamificationStore.ts     ← XP events (addXPEvent also increments local xp), confetti, level
     lessonStore.ts           ← currentLesson, currentExerciseIndex, AIPanelMode
     modulesStore.ts          ← modules[], refresh() — used in RootLayout sidebar
     uiStore.ts               ← darkMode, focusMode, sidebarOpen, pomodoro
+  hooks/
+    useToolSessions.ts       ← localStorage CRUD hook for per-tool sessions (max 20 per tool)
   pages/
     DashboardPage.tsx        ← Stats, weekly chart, module cards, Leaderboard, WeakAreasPanel
     LessonPage.tsx           ← Learn tab + Practice tab, StudyingNow badge, MicroWin nudge
     ModulesPage.tsx
-    LearningToolsPage.tsx    ← 7 tabs (see below)
+    LearningToolsPage.tsx    ← 7 tabs + Sessions panel sidebar (auto-saves generated content)
+    MemoryVaultPage.tsx      ← Vault tab (notes/code/insights) + Session History tab
+    DevToolsPage.tsx         ← 6 real-world dev tool tabs (see below)
     ProfilePage.tsx          ← XP bar, stats grid, radar chart, NotionExport button
     AchievementsPage.tsx
     DailyChallengePage.tsx
@@ -141,8 +166,16 @@ frontend/src/
       VisualFlashcards.tsx   ← Flip-card flashcards with Study Mode
       SocraticStandalone.tsx ← Standalone Socratic chat (topic → explain → reexplain → mastered)
       LearningPlanGenerator, QuickReference, LevelRoadmap
+      SessionsPanel.tsx      ← Sessions sidebar (restore/delete/clear per tool)
     tools/
       HoppscotchPlayground.tsx ← 6 free public APIs, Run Request + "Open in Hoppscotch" buttons
+    devtools/
+      GitHubTrending.tsx     ← GitHub Search API, filter Today/Week/Month/Forks, topic search
+      PyPIExplorer.tsx       ← PyPI JSON API, package info + one-click install command copy
+      RegexLab.tsx           ← Live regex highlighting, match list, generated Python re code
+      JsonDictConverter.tsx  ← Bidirectional JSON↔Python dict (null/None, true/True, false/False)
+      PEPBrowser.tsx         ← peps.python.org/api/peps.json, filter by status/type, featured PEPs
+      CurlConverter.tsx      ← Parse curl commands → Python requests code, auto-detect JSON body
     dashboard/
       Leaderboard.tsx        ← Redis-backed XP leaderboard, top 20, you highlighted
       WeeklyProgressChart, StatsGrid, SkillRadarChart, WeakAreasPanel
@@ -152,7 +185,19 @@ frontend/src/
       NotionExport.tsx       ← Export progress to Notion workspace
 ```
 
-## Learning Tools page tabs (7 total)
+## Sidebar nav items (RootLayout)
+```
+/dashboard      🏠  Dashboard
+/modules        📚  Learn
+/achievements   🏆  Achievements
+/daily          ⚡  Daily Challenge
+/learning-tools 🧠  Learning Tools
+/memory         🗄️  Memory Vault
+/dev-tools      🛠️  Dev Tools
+/profile        👤  Profile
+```
+
+## Learning Tools page tabs (7 total) + Sessions
 
 | Tab | Component | What it does |
 |-----|-----------|-------------|
@@ -163,6 +208,27 @@ frontend/src/
 | 🃏 Flashcards | VisualFlashcards | AI emoji flip-cards with study mode |
 | 🕸️ Concept Map | ConceptMap | React Flow interactive AI mind map |
 | 🔌 API Playground | HoppscotchPlayground | Test real APIs, link to Hoppscotch |
+
+Each tool has an `onGenerated(content)` callback. Generated content is saved to localStorage via `useToolSessions`. The `🕐 Sessions` button (with count badge) in the toolbar opens `SessionsPanel` to restore or delete past sessions.
+
+## Dev Tools page tabs (6 total)
+
+| Tab | Component | Data source |
+|-----|-----------|------------|
+| 📈 GitHub Trending | GitHubTrending | GitHub Search API (public, no auth) |
+| 📦 PyPI Explorer | PyPIExplorer | pypi.org/pypi/{pkg}/json |
+| 🔍 Regex Lab | RegexLab | Client-side JS RegExp |
+| 🔄 JSON↔Dict | JsonDictConverter | Client-side converter |
+| 📜 PEP Browser | PEPBrowser | peps.python.org/api/peps.json |
+| 🌐 cURL→Python | CurlConverter | Client-side parser |
+
+## Memory Vault page (`/memory`)
+
+Two tabs:
+- **Vault** — create/edit/delete memory entries. Types: `note` / `code` / `insight` / `resource`. Filter by type, search by title/content/tags, link to a lesson slug.
+- **Session History** — browse past AI chat sessions (from `chat_sessions` + `chat_messages` DB tables). Each session shows timestamp, message count, and expandable message thread.
+
+Memory entries are stored in PostgreSQL (`memory_vault` table). Chat sessions are persisted to DB on every `/api/v1/ai/chat` call in addition to Redis.
 
 ## MCP server (`backend/mcp_server.py`)
 
@@ -184,8 +250,8 @@ Registered in `.claude/settings.json` — Claude Code connects automatically.
 
 | Service | Where | What it does |
 |---------|-------|-------------|
-| **Redis** | `docker-compose.yml` + `cache_service.py` | Modules cache (2 min TTL), XP leaderboard sorted set, study presence |
-| **LangGraph** | `services/ai_agent.py` | Stateful tutor agent, Redis-backed chat history (2 hr TTL), 3 tools |
+| **Redis** | `docker-compose.yml` + `cache_service.py` | Modules cache (2 min TTL), XP leaderboard sorted set, study presence, AI chat history (2 hr TTL) |
+| **LangGraph** | `services/ai_agent.py` | Stateful tutor agent, Redis-backed conversation history, 3 tools |
 | **Hoppscotch** | `HoppscotchPlayground.tsx` | In-app API tester + deep-link to hoppscotch.io |
 | **Supabase** | `lib/supabase.ts` + `StudyingNow.tsx` | Realtime Presence — shows who's studying the same lesson |
 | **Notion** | `routers/export.py` + `NotionExport.tsx` | Exports XP, lessons, achievements to a Notion database page |
@@ -195,32 +261,54 @@ Optional services (Supabase, Notion) degrade gracefully when env vars are not se
 ## API routes summary
 
 ```
-POST /api/v1/auth/register|login   GET /api/v1/auth/me
-GET|PATCH /api/v1/users/me         GET /api/v1/users/me/stats
-GET /api/v1/modules                GET /api/v1/modules/{slug}
-GET /api/v1/lessons/{id}           POST /api/v1/lessons/{id}/start|complete
-GET /api/v1/exercises/{id}         POST /api/v1/exercises/{id}/submit
+POST /api/v1/auth/register|login       GET /api/v1/auth/me
+GET|PATCH /api/v1/users/me             GET /api/v1/users/me/stats
+GET /api/v1/modules                    GET /api/v1/modules/{slug}
+GET /api/v1/lessons/{id}               POST /api/v1/lessons/{id}/start|complete
+GET /api/v1/exercises/{id}             POST /api/v1/exercises/{id}/submit
 GET /api/v1/exercises/{id}/hint
-GET /api/v1/progress               GET /api/v1/progress/weekly|weak-areas
-GET /api/v1/achievements           GET /api/v1/achievements/earned
-GET /api/v1/streaks                POST /api/v1/streaks/check-in
+GET /api/v1/progress                   GET /api/v1/progress/weekly|weak-areas
+GET /api/v1/achievements               GET /api/v1/achievements/earned
+GET /api/v1/streaks                    POST /api/v1/streaks/check-in
 POST /api/v1/code/run
 POST /api/v1/ai/hint|review|explain|chat
-GET /api/v1/leaderboard            GET /api/v1/leaderboard/me   POST /api/v1/leaderboard/sync
+GET /api/v1/leaderboard                GET /api/v1/leaderboard/me   POST /api/v1/leaderboard/sync
 POST /api/v1/export/notion
+GET|POST /api/v1/memory/entries        GET|PUT|DELETE /api/v1/memory/entries/{id}
+GET /api/v1/memory/sessions            GET /api/v1/memory/sessions/{id}
+DELETE /api/v1/memory/sessions/{id}    GET /api/v1/memory/stats
 GET /api/health
 ```
 
 ## Architecture decisions
 
+### AI provider chain
+`config.py` exposes `ai_api_key`, `ai_model`, `ai_base_url`, `ai_provider` computed from env:
+1. **ZAI** — if `ZAI_API_KEY` is set
+2. **NVIDIA NIM** — if `NVIDIA_API_KEY` is set (current default, model: `google/gemma-4-31b-it`)
+3. **OpenAI** — fallback if `OPENAI_API_KEY` is set
+
+`ai_service.py` and `ai_agent.py` both read these — no other changes needed to switch.
+`_check_ai_configured()` in `routers/ai.py` checks `settings.ai_api_key` (not `openai_api_key`).
+
+Note: NVIDIA models don't support `response_format=json_object`. The review and explain endpoints extract JSON with regex instead.
+
+### Chat persistence (dual storage)
+Every `/api/v1/ai/chat` call:
+1. Saves messages to Redis (2 hr TTL) for fast in-session retrieval by LangGraph
+2. Persists the full session to PostgreSQL (`chat_sessions` + `chat_messages`) for permanent history browsable in Memory Vault → Session History tab
+
 ### LangGraph chat vs simple OpenAI
-`ai_service.chat()` routes through `ai_agent.py` which runs a `StateGraph` with 3 tools and Redis-backed conversation history. Falls back to raw OpenAI if LangGraph fails. Single-shot calls (hint, review, explain) still use direct OpenAI — no need for state there.
+`ai_service.chat()` routes through `ai_agent.py` which runs a `StateGraph` with 3 tools and Redis-backed conversation history. Falls back to raw OpenAI if LangGraph fails. Single-shot calls (hint, review, explain) still use direct OpenAI.
 
 ### Redis caching pattern
 Modules list is cached per user with a 2-min TTL. Any action that changes progress (exercise submit, lesson complete) should call `cache_service.cache_del(f"modules:{user_id}")` to invalidate. Currently the frontend calls `refreshModules()` which re-fetches and re-caches.
 
+### Tool sessions (localStorage)
+`useToolSessions(toolId)` stores up to 20 sessions per tool in `localStorage` under key `tool-sessions-{toolId}`. `SessionsPanel` is the shared UI — add `onGenerated(content)` prop to any tool component, call it when content is produced, and the session is saved automatically.
+
 ### Supabase presence (optional)
-`StudyingNow` only renders when `VITE_SUPABASE_URL` is set. It tracks the current user on the lesson's presence channel and shows others. No Supabase account = component is silent.
+`StudyingNow` only renders when `VITE_SUPABASE_URL` is set. No Supabase account = component is silent.
 
 ### highlight.js in lessons
 `LessonContent` runs `hljs.highlightElement()` on every `<pre><code>` block after render via `useEffect`. Language auto-detected. Style: `atom-one-dark`.
@@ -243,7 +331,7 @@ Modules list is cached per user with a 2-min TTL. Any action that changes progre
 `useModulesStore.refresh()` is called after every exercise pass and lesson completion. `RootLayout` uses `useModulesStore` so the sidebar % updates without page reload.
 
 ### Auto-advance between lessons
-`LessonDetail` includes `next_lesson_id` and `next_lesson_title` (computed by backend from `order_index + 1` in same module). `ExerciseRouter` shows a completion screen with a 5-second SVG countdown ring, then calls `onAllDone()` which navigates to next lesson or `/modules`.
+`LessonDetail` includes `next_lesson_id` and `next_lesson_title` (computed by backend from `order_index + 1` in same module). `ExerciseRouter` shows a completion screen with a 5-second SVG countdown ring, then navigates to next lesson or `/modules`.
 
 ## Conventions
 
@@ -264,7 +352,13 @@ Modules list is cached per user with a 2-min TTL. Any action that changes progre
 
 ### Add a new Learning Tools tab
 1. Create component in `frontend/src/components/learning/` or `tools/`
-2. Add entry to `TABS` array in `frontend/src/pages/LearningToolsPage.tsx`
+2. Add `onGenerated?: (content: string) => void` prop to the component; call it when content is produced
+3. Add entry to `TABS` array in `frontend/src/pages/LearningToolsPage.tsx`
+4. Pass `onGenerated` callback in the render condition in the same file
+
+### Add a new Dev Tools tab
+1. Create component in `frontend/src/components/devtools/`
+2. Add entry to `TABS` array in `frontend/src/pages/DevToolsPage.tsx`
 3. Add render condition in the same file
 
 ### Add a new AI tool to the MCP server
@@ -277,26 +371,29 @@ Modules list is cached per user with a 2-min TTL. Any action that changes progre
 2. Run seeder
 3. Add trigger logic in `backend/app/services/gamification_service.py → check_and_award_achievements`
 
+### Add a new DB table
+1. Create model in `backend/app/models/`
+2. Import it in `backend/app/models/__init__.py` (if applicable)
+3. Write Alembic migration: `docker compose exec backend alembic revision --autogenerate -m "description"`
+4. Apply: `docker compose exec backend alembic upgrade head`
+
 ### Change XP per level thresholds
 Edit `XP_PER_LEVEL` list in `backend/app/services/gamification_service.py`.
 
 ### Switch AI provider (OpenAI ↔ NVIDIA NIM)
-The provider is determined by which key is set in `.env`. NVIDIA takes priority when `NVIDIA_API_KEY` is present.
+Set the appropriate key in `.env`. NVIDIA takes priority over OpenAI when `NVIDIA_API_KEY` is present.
 
 ```bash
-# Use NVIDIA (free at https://build.nvidia.com/)
+# Use NVIDIA NIM (free at https://build.nvidia.com/)
 NVIDIA_API_KEY=nvapi-...
-NVIDIA_MODEL=meta/llama-3.1-8b-instruct   # or any model from build.nvidia.com
+NVIDIA_MODEL=google/gemma-4-31b-it   # or any model from build.nvidia.com
+NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1
 
 # Use OpenAI (comment out or remove NVIDIA_API_KEY)
 OPENAI_API_KEY=sk-...
 ```
 
 The logic lives in `app/config.py` properties `ai_api_key`, `ai_model`, `ai_base_url`, `ai_provider`.
-`ai_service.py` and `ai_agent.py` both read from these — no other changes needed to switch.
-
-Note: NVIDIA models don't support `response_format=json_object`. The review and explain endpoints
-handle this by extracting JSON with regex instead.
 
 ### Extend the Leaderboard
 Redis sorted set key: `leaderboard:xp`. Member format: `{user_id}\x00{display_name}`. Scores are XP integers. `cache_service.leaderboard_upsert/get/rank` are the helpers.

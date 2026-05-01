@@ -13,8 +13,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -Command \"Set-Location 'E:\\projects\\python-adhd dashboard'; git add -u; $diff = git diff --cached --name-only; if ($diff) { git commit -m \\\"auto: $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\" }\"",
-            "timeout": 30
+            "command": "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"E:\\projects\\python-adhd dashboard\\.claude\\auto-commit.ps1\"",
+            "timeout": 60
           }
         ]
       }
