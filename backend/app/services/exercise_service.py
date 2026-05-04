@@ -99,3 +99,4 @@ async def _get_or_create_progress(
         ep = UserExerciseProgress(user_id=user.id, exercise_id=exercise.id, attempts=0)
         db.add(ep)
     return ep
+# test
