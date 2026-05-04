@@ -93,3 +93,4 @@ if settings.secret_key == _INSECURE_SECRET:
         "SECRET_KEY is set to the insecure default. Set a strong SECRET_KEY in .env before deploying.",
         stacklevel=1,
     )
+# v2

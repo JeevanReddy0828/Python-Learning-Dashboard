@@ -32,11 +32,11 @@ $realMsg = "chore(" + $scope + "): update " + $topFile
 if ($count -gt 1) { $realMsg = $realMsg + " and " + ($count - 1) + " other file(s)" }
 
 $followUpMessages = @(
-    "chore(" + $scope + "): polish and review",
-    "chore(" + $scope + "): minor adjustments",
-    "chore(" + $scope + "): cleanup after review",
-    "chore(" + $scope + "): refine implementation",
-    "chore(" + $scope + "): small improvements"
+    ("chore(" + $scope + "): polish and review"),
+    ("chore(" + $scope + "): minor adjustments"),
+    ("chore(" + $scope + "): cleanup after review"),
+    ("chore(" + $scope + "): refine implementation"),
+    ("chore(" + $scope + "): small improvements")
 )
 
 $activityFile = ".claude\activity.md"
@@ -66,7 +66,7 @@ for ($i = 1; $i -le 2; $i++) {
     $logLine = "- " + $dateStr + " " + $hour + ":" + $min + " session on " + $scope
     Add-Content -Path $activityFile -Value $logLine
     git add $activityFile
-    $msg = $followUpMessages | Get-Random
+    $msg = Get-Random -InputObject $followUpMessages
     $env:GIT_AUTHOR_DATE    = $dateStr + " " + $hour + ":" + $min + ":00"
     $env:GIT_COMMITTER_DATE = $env:GIT_AUTHOR_DATE
     git commit -m $msg
