@@ -21,6 +21,13 @@ def _supports_json_mode() -> bool:
     return settings.ai_supports_json_mode
 
 
+def _extra_body() -> dict | None:
+    """NVIDIA Gemma-4 supports extended thinking — pass it through when available."""
+    if settings.ai_provider == "nvidia" and "gemma" in settings.ai_model.lower():
+        return {"chat_template_kwargs": {"enable_thinking": True}}
+    return None
+
+
 async def get_hint(code: str, exercise_title: str, hint_level: int) -> str:
     specificity = ["very general", "more specific", "very specific (almost a spoiler)"][hint_level - 1]
     client = _make_client()
@@ -43,6 +50,7 @@ async def get_hint(code: str, exercise_title: str, hint_level: int) -> str:
         ],
         max_tokens=150,
         temperature=0.7,
+        extra_body=_extra_body(),
     )
     return response.choices[0].message.content.strip()
 
@@ -67,6 +75,7 @@ async def review_code(code: str, exercise_title: str = "") -> ReviewResponse:
         ],
         max_tokens=500,
         temperature=0.5,
+        extra_body=_extra_body(),
     )
     if _supports_json_mode():
         kwargs["response_format"] = {"type": "json_object"}
@@ -107,6 +116,7 @@ async def explain_code(code: str) -> ExplainResponse:
         ],
         max_tokens=1000,
         temperature=0.3,
+        extra_body=_extra_body(),
     )
     if _supports_json_mode():
         kwargs["response_format"] = {"type": "json_object"}
@@ -162,5 +172,6 @@ async def chat(
             ],
             max_tokens=500,
             temperature=0.7,
+            extra_body=_extra_body(),
         )
         return response.choices[0].message.content.strip()

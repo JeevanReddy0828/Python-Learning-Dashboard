@@ -105,6 +105,8 @@ def _make_llm():
     )
     if settings.ai_base_url:
         kwargs["base_url"] = settings.ai_base_url
+    if settings.ai_provider == "nvidia" and "gemma" in settings.ai_model.lower():
+        kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": True}}
     return ChatOpenAI(**kwargs).bind_tools(TOOLS)
 
 

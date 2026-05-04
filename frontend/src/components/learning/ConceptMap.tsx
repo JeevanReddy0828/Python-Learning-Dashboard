@@ -144,12 +144,23 @@ function buildGraph(root: ConceptNode): { nodes: Node[]; edges: Edge[] } {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function ConceptMap() {
+interface Props {
+  onGenerated?: (title: string, content: string) => void
+  restored?: string
+}
+
+export default function ConceptMap({ onGenerated, restored }: Props) {
   const [topic, setTopic] = useState('')
   const [loading, setLoading] = useState(false)
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
-  const [hasMap, setHasMap] = useState(false)
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(() => {
+    if (restored) try { return JSON.parse(restored).nodes ?? [] } catch { return [] }
+    return []
+  })
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(() => {
+    if (restored) try { return JSON.parse(restored).edges ?? [] } catch { return [] }
+    return []
+  })
+  const [hasMap, setHasMap] = useState(!!restored)
 
   const generate = useCallback(async () => {
     if (!topic.trim()) return
@@ -192,11 +203,13 @@ Rules:
       setNodes(graph.nodes)
       setEdges(graph.edges)
       setHasMap(true)
+      onGenerated?.(topic, JSON.stringify({ nodes: graph.nodes, edges: graph.edges }))
     } catch {
       const graph = buildGraph(getDemoMap(topic))
       setNodes(graph.nodes)
       setEdges(graph.edges)
       setHasMap(true)
+      onGenerated?.(topic, JSON.stringify({ nodes: graph.nodes, edges: graph.edges }))
     } finally {
       setLoading(false)
     }

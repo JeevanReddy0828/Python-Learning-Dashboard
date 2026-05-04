@@ -180,3 +180,36 @@ export interface LeaderboardEntry {
   xp: number
   is_me: boolean
 }
+
+// Memory Vault
+export interface MemoryEntry {
+  id: string
+  title: string
+  content: string
+  memory_type: 'note' | 'code' | 'insight' | 'error_fix'
+  tags: string[]
+  lesson_slug: string | null
+  created_at: string
+  updated_at: string
+}
+
+// Chat Session History
+export interface ChatMessageRecord {
+  id: string
+  role: 'user' | 'ai'
+  content: string
+  created_at: string
+}
+
+export interface ChatSessionSummary {
+  id: string
+  title: string
+  lesson_slug: string | null
+  created_at: string
+  last_message_at: string
+  message_count: number
+}
+
+export interface ChatSessionDetail extends ChatSessionSummary {
+  messages: ChatMessageRecord[]
+}

@@ -6,9 +6,11 @@ from app.models.progress import UserLessonProgress, UserExerciseProgress
 from app.models.achievement import Achievement, UserAchievement
 from app.models.streak import Streak
 from app.models.code_submission import CodeSubmission
+from app.models.memory import MemoryVaultEntry, ChatSession, ChatMessage
 
 __all__ = [
     "User", "Module", "Lesson", "Exercise",
     "UserLessonProgress", "UserExerciseProgress",
     "Achievement", "UserAchievement", "Streak", "CodeSubmission",
+    "MemoryVaultEntry", "ChatSession", "ChatMessage",
 ]

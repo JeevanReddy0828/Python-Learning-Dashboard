@@ -16,7 +16,11 @@ const PHASE_LABELS: Record<Phase, string> = {
   mastered: 'Mastered!',
 }
 
-export default function SocraticStandalone() {
+interface Props {
+  onGenerated?: (title: string, content: string) => void
+}
+
+export default function SocraticStandalone({ onGenerated }: Props) {
   const [topic, setTopic] = useState('')
   const [started, setStarted] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -33,6 +37,7 @@ export default function SocraticStandalone() {
     if (!topic.trim()) return
     setStarted(true)
     setLoading(true)
+    onGenerated?.(topic, JSON.stringify({ topic, startedAt: new Date().toISOString() }))
 
     const prompt = `You are a Socratic Python tutor. The student wants to learn "${topic}".
 

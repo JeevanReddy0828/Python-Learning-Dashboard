@@ -71,9 +71,17 @@ function FlipCard({ card, index }: { card: Flashcard; index: number }) {
   )
 }
 
-export default function VisualFlashcards() {
+interface Props {
+  onGenerated?: (title: string, content: string) => void
+  restored?: string
+}
+
+export default function VisualFlashcards({ onGenerated, restored }: Props) {
   const [topic, setTopic] = useState('')
-  const [cards, setCards] = useState<Flashcard[]>([])
+  const [cards, setCards] = useState<Flashcard[]>(() => {
+    if (restored) try { return JSON.parse(restored) } catch { return [] }
+    return []
+  })
   const [loading, setLoading] = useState(false)
   const [studyMode, setStudyMode] = useState(false)
   const [studyIndex, setStudyIndex] = useState(0)
@@ -105,9 +113,15 @@ Rules:
       const res = await aiApi.chat(prompt, '', topic)
       const raw = res.data.response
       const match = raw.match(/\[[\s\S]*\]/)
-      if (match) setCards(JSON.parse(match[0]))
+      if (match) {
+        const parsed = JSON.parse(match[0])
+        setCards(parsed)
+        onGenerated?.(topic, JSON.stringify(parsed))
+      }
     } catch {
-      setCards(getDemoCards(topic))
+      const demo = getDemoCards(topic)
+      setCards(demo)
+      onGenerated?.(topic, JSON.stringify(demo))
     } finally {
       setLoading(false)
     }

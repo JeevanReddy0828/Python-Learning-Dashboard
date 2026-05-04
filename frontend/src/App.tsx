@@ -12,6 +12,8 @@ import AchievementsPage from './pages/AchievementsPage'
 import ProfilePage from './pages/ProfilePage'
 import DailyChallengesPage from './pages/DailyChallengesPage'
 import LearningToolsPage from './pages/LearningToolsPage'
+import MemoryVaultPage from './pages/MemoryVaultPage'
+import DevToolsPage from './pages/DevToolsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -45,6 +47,8 @@ export default function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="daily" element={<DailyChallengesPage />} />
           <Route path="learning-tools" element={<LearningToolsPage />} />
+          <Route path="memory" element={<MemoryVaultPage />} />
+          <Route path="dev-tools" element={<DevToolsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

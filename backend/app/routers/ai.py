@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+import uuid
+from datetime import datetime, timezone
 
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_db
 from app.deps import get_current_user
 from app.models.user import User
+from app.models.memory import ChatSession, ChatMessage
 from app.schemas.ai import (
     HintRequest, HintResponse,
     ReviewRequest, ReviewResponse,
@@ -39,7 +46,11 @@ async def explain(payload: ExplainRequest, current_user: User = Depends(get_curr
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(payload: ChatRequest, current_user: User = Depends(get_current_user)):
+async def chat(
+    payload: ChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
     _check_ai_configured()
     response = await ai_service.chat(
         payload.message,
@@ -47,4 +58,32 @@ async def chat(payload: ChatRequest, current_user: User = Depends(get_current_us
         payload.lesson_title or "",
         user_id=str(current_user.id),
     )
+
+    # Persist to session history (fire-and-forget style — don't fail the request if DB write fails)
+    try:
+        session_title = payload.lesson_title or payload.message[:60] or "AI Chat"
+        # Find or create today's session for this context
+        session = await db.scalar(
+            select(ChatSession).where(
+                ChatSession.user_id == current_user.id,
+                ChatSession.title == session_title,
+            ).order_by(ChatSession.created_at.desc())
+        )
+        if not session:
+            session = ChatSession(
+                id=uuid.uuid4(),
+                user_id=current_user.id,
+                title=session_title,
+                lesson_slug=payload.lesson_title or None,
+            )
+            db.add(session)
+            await db.flush()
+
+        db.add(ChatMessage(id=uuid.uuid4(), session_id=session.id, role="user", content=payload.message))
+        db.add(ChatMessage(id=uuid.uuid4(), session_id=session.id, role="ai", content=response))
+        session.last_message_at = datetime.now(timezone.utc)
+        await db.commit()
+    except Exception:
+        pass  # Never let history persistence break the chat response
+
     return ChatResponse(response=response)

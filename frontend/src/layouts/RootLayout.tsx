@@ -18,6 +18,8 @@ const NAV_ITEMS = [
   { to: '/achievements', icon: '🏆', label: 'Achievements' },
   { to: '/daily', icon: '⚡', label: 'Daily Challenge' },
   { to: '/learning-tools', icon: '🧠', label: 'Learning Tools' },
+  { to: '/memory', icon: '🗄️', label: 'Memory Vault' },
+  { to: '/dev-tools', icon: '🛠️', label: 'Dev Tools' },
   { to: '/profile', icon: '👤', label: 'Profile' },
 ]
 

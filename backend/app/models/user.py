@@ -26,3 +26,5 @@ class User(Base):
     achievements: Mapped[list["UserAchievement"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     streak: Mapped["Streak"] = relationship(back_populates="user", uselist=False, cascade="all, delete-orphan")
     code_submissions: Mapped[list["CodeSubmission"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    memory_entries: Mapped[list["MemoryVaultEntry"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    chat_sessions: Mapped[list["ChatSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")

@@ -16,9 +16,17 @@ interface Session {
   review: string
 }
 
-export default function LearningPlanGenerator() {
+interface Props {
+  onGenerated?: (title: string, content: string) => void
+  restored?: string
+}
+
+export default function LearningPlanGenerator({ onGenerated, restored }: Props) {
   const [topic, setTopic] = useState('')
-  const [plan, setPlan] = useState<Session[]>([])
+  const [plan, setPlan] = useState<Session[]>(() => {
+    if (restored) try { return JSON.parse(restored) } catch { return [] }
+    return []
+  })
   const [loading, setLoading] = useState(false)
   const [expandedSession, setExpandedSession] = useState<number | null>(0)
 
@@ -50,10 +58,12 @@ Return ONLY valid JSON array, no other text.`
         const sessions = JSON.parse(jsonMatch[0]) as Session[]
         setPlan(sessions)
         setExpandedSession(0)
+        onGenerated?.(topic, JSON.stringify(sessions))
       }
     } catch {
-      // fallback demo plan
-      setPlan(getDemoPlan(topic))
+      const demo = getDemoPlan(topic)
+      setPlan(demo)
+      onGenerated?.(topic, JSON.stringify(demo))
     } finally {
       setLoading(false)
     }
