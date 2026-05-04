@@ -6,5 +6,18 @@
       "cwd": "E:\\projects\\python-adhd dashboard\\backend",
       "env": {}
     }
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"Set-Location 'E:\\projects\\python-adhd dashboard'; git add -u; $diff = git diff --cached --name-only; if ($diff) { git commit -m \\\"auto: $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\" }\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
   }
 }

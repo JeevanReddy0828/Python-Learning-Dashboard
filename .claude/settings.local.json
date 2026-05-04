@@ -10,7 +10,10 @@
       "Bash(docker -H npipe:////./pipe/docker_engine ps --format \"table {{.Names}}\\\\t{{.Status}}\")",
       "Bash(pip show *)",
       "Bash(pip install *)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "PowerShell(Set-Location 'E:\\\\projects\\\\python-adhd dashboard'; git add -u; $diff = git diff --cached --name-only; if \\($diff\\) { Write-Output \"Would commit: $diff\" } else { Write-Output \"Nothing to commit — hook would skip\" })"
     ]
   }
 }
