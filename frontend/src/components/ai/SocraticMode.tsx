@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { aiApi } from '../../api'
+import { streamChat } from '../../api'
 import type { LessonDetail } from '../../types'
 
 /**
@@ -37,12 +37,18 @@ export default function SocraticMode({ lesson }: Props) {
 Step 1: Explain this concept in the SIMPLEST possible terms (ELI5). Use an analogy. Keep it under 4 sentences.
 Then ask: "Now YOU explain it back to me in your own words — don't look at the lesson!"`
 
-    try {
-      const res = await aiApi.chat(systemPrompt, '', lesson.title)
-      addMessage('ai', res.data.response)
-    } finally {
-      setLoading(false)
-    }
+    addMessage('ai', '')
+    await streamChat(
+      systemPrompt,
+      (token) => setMessages((prev) => {
+        const updated = [...prev]
+        updated[updated.length - 1] = { ...updated[updated.length - 1], content: updated[updated.length - 1].content + token }
+        return updated
+      }),
+      () => { setLoading(false); setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50) },
+      '',
+      lesson.title,
+    )
   }
 
   async function sendMessage() {
@@ -89,17 +95,27 @@ Student message: "${userMsg}"
 Be encouraging and helpful.`
     }
 
-    try {
-      const history = messages.map((m) => `${m.role === 'ai' ? 'Tutor' : 'Student'}: ${m.content}`).join('\n')
-      const res = await aiApi.chat(systemContext, history, lesson.title)
-      addMessage('ai', res.data.response)
-
-      if (phase === 'mastered' || res.data.response.includes('⭐') || res.data.response.toLowerCase().includes("you've got it")) {
-        setPhase('mastered')
-      }
-    } finally {
-      setLoading(false)
-    }
+    const history = messages.map((m) => `${m.role === 'ai' ? 'Tutor' : 'Student'}: ${m.content}`).join('\n')
+    addMessage('ai', '')
+    await streamChat(
+      systemContext,
+      (token) => setMessages((prev) => {
+        const updated = [...prev]
+        updated[updated.length - 1] = { ...updated[updated.length - 1], content: updated[updated.length - 1].content + token }
+        return updated
+      }),
+      () => {
+        setMessages((prev) => {
+          const last = prev[prev.length - 1]
+          if (last.content.includes('⭐') || last.content.toLowerCase().includes("you've got it")) setPhase('mastered')
+          return prev
+        })
+        setLoading(false)
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
+      },
+      history,
+      lesson.title,
+    )
   }
 
   return (

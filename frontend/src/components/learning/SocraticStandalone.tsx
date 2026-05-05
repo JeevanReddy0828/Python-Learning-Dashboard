@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { aiApi } from '../../api'
+import { streamChat } from '../../api'
 
 interface Message {
   role: 'ai' | 'user'
@@ -46,20 +46,18 @@ export default function SocraticStandalone({ onGenerated }: Props) {
 
 Keep it under 100 words.`
 
-    try {
-      const res = await aiApi.chat(prompt, '', topic)
-      setMessages([{ role: 'ai', text: res.data.response, phase: 'intro' }])
-      setPhase('explain')
-    } catch {
-      setMessages([{
-        role: 'ai',
-        text: `Let's learn about "${topic}"! Explain it back to me in your own words — even if you're not sure. Just try!`,
-        phase: 'intro',
-      }])
-      setPhase('explain')
-    } finally {
-      setLoading(false)
-    }
+    setMessages([{ role: 'ai', text: '', phase: 'intro' }])
+    await streamChat(
+      prompt,
+      (token) => setMessages((prev) => {
+        const updated = [...prev]
+        updated[updated.length - 1] = { ...updated[updated.length - 1], text: updated[updated.length - 1].text + token }
+        return updated
+      }),
+      () => { setPhase('explain'); setLoading(false) },
+      '',
+      topic,
+    )
   }
 
   async function sendMessage() {
@@ -102,19 +100,31 @@ Continue the Socratic dialogue:
 - If they've shown strong understanding across multiple exchanges, end with: [MASTERED]`
     }
 
-    try {
-      const res = await aiApi.chat(prompt, '', topic)
-      const text = res.data.response
-      const isMastered = text.includes('[MASTERED]')
-      const cleanText = text.replace('[MASTERED]', '').trim()
-      const nextPhase: Phase = isMastered ? 'mastered' : phase
-      setMessages((prev) => [...prev, { role: 'ai', text: cleanText, phase: nextPhase }])
-      if (isMastered) setPhase('mastered')
-    } catch {
-      setMessages((prev) => [...prev, { role: 'ai', text: 'Keep going! What else do you know about this topic?' }])
-    } finally {
-      setLoading(false)
-    }
+    const currentPhase = phase
+    setMessages((prev) => [...prev, { role: 'ai', text: '', phase: currentPhase }])
+    await streamChat(
+      prompt,
+      (token) => setMessages((prev) => {
+        const updated = [...prev]
+        updated[updated.length - 1] = { ...updated[updated.length - 1], text: updated[updated.length - 1].text + token }
+        return updated
+      }),
+      () => {
+        setMessages((prev) => {
+          const last = prev[prev.length - 1]
+          if (last.text.includes('[MASTERED]')) {
+            setPhase('mastered')
+            const updated = [...prev]
+            updated[updated.length - 1] = { ...last, text: last.text.replace('[MASTERED]', '').trim(), phase: 'mastered' }
+            return updated
+          }
+          return prev
+        })
+        setLoading(false)
+      },
+      '',
+      topic,
+    )
   }
 
   function reset() {

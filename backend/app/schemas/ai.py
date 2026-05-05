@@ -49,3 +49,14 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+
+class DevChatRequest(BaseModel):
+    mode: str
+    input_text: str
+    code: str | None = None
+
+
+class DevChatResponse(BaseModel):
+    response: str
+    mode: str
