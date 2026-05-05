@@ -84,6 +84,82 @@ export const aiApi = {
     apiClient.post<{ lines: LineExplanation[] }>('/ai/explain', { code }),
   chat: (message: string, context_code?: string, lesson_title?: string) =>
     apiClient.post<{ response: string }>('/ai/chat', { message, context_code, lesson_title }),
+  devChat: (mode: string, input_text: string, code?: string) =>
+    apiClient.post<{ response: string; mode: string }>('/ai/dev-chat', { mode, input_text, code }),
+}
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+export async function streamDevChat(
+  mode: string,
+  inputText: string,
+  onToken: (token: string) => void,
+  onDone: () => void,
+  code?: string,
+): Promise<void> {
+  const token = localStorage.getItem('access_token')
+  const res = await fetch(`${API_URL}/api/v1/ai/stream-dev-chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ mode, input_text: inputText, code }),
+  })
+  if (!res.ok || !res.body) { onDone(); return }
+  const reader = res.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split('\n')
+    buffer = lines.pop() ?? ''
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue
+      const payload = line.slice(6)
+      if (payload === '[DONE]') { onDone(); return }
+      try { onToken(JSON.parse(payload).t) } catch { /* skip */ }
+    }
+  }
+  onDone()
+}
+
+export async function streamChat(
+  message: string,
+  onToken: (token: string) => void,
+  onDone: () => void,
+  contextCode?: string,
+  lessonTitle?: string,
+): Promise<void> {
+  const token = localStorage.getItem('access_token')
+  const res = await fetch(`${API_URL}/api/v1/ai/stream-chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ message, context_code: contextCode, lesson_title: lessonTitle }),
+  })
+  if (!res.ok || !res.body) { onDone(); return }
+  const reader = res.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split('\n')
+    buffer = lines.pop() ?? ''
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue
+      const payload = line.slice(6)
+      if (payload === '[DONE]') { onDone(); return }
+      try { onToken(JSON.parse(payload).t) } catch { /* skip malformed chunk */ }
+    }
+  }
+  onDone()
 }
 
 // Leaderboard (Redis-backed)
