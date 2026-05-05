@@ -2,6 +2,78 @@
 
 An interactive, full-stack Python learning platform built for ADHD learners: micro-lessons, in-browser code execution, AI-powered tutoring, gamification, and a suite of developer tools.
 
+## Architecture
+
+```mermaid
+flowchart TD
+    User(["👤 User\n(Browser)"])
+
+    subgraph Frontend["Frontend — React 18 + Vite + TypeScript"]
+        UI["Pages & Components\nDashboard · Lessons · Exercises\nLearning Tools · AI Workshop"]
+        Pyodide["🐍 Pyodide\nRuns Python in-browser\n(Web Worker)"]
+        Zustand["Zustand Stores\nauth · gamification · ui · modules"]
+    end
+
+    subgraph Backend["Backend — FastAPI + Python 3.12"]
+        API["REST API\n/api/v1/*"]
+        AIService["AI Service\ndirect async OpenAI call\n(no LangGraph for chat)"]
+        GameSvc["Gamification Service\nXP · levels · achievements"]
+        CodeSvc["Code Execution\nasyncio subprocess\n10s timeout"]
+        MCP["MCP Server\n5 tools + curriculum resources"]
+    end
+
+    subgraph Data["Data Layer"]
+        PG[("PostgreSQL 16\nusers · lessons · exercises\nprogress · achievements")]
+        Redis[("Redis 7\nleaderboard sorted set\nmodules cache · chat history")]
+    end
+
+    subgraph AI["AI Provider (switchable via .env)"]
+        NVIDIA["NVIDIA NIM\nllama-3.1-8b-instruct\n(default, fast)"]
+        OpenAI["OpenAI\ngpt-4o-mini\n(fallback)"]
+    end
+
+    subgraph Optional["Optional Integrations"]
+        Supabase["Supabase Realtime\nPresence — 'studying now'"]
+        Notion["Notion API\nProgress export"]
+    end
+
+    User -->|"HTTP / SSE"| Frontend
+    UI --> Zustand
+    UI -->|"run code"| Pyodide
+    UI -->|"axios"| API
+
+    API --> AIService
+    API --> GameSvc
+    API --> CodeSvc
+    API --> PG
+    API --> Redis
+
+    AIService -->|"streaming SSE"| NVIDIA
+    AIService -->|"fallback"| OpenAI
+
+    GameSvc --> PG
+    GameSvc --> Redis
+
+    MCP -.->|"stdio"| Backend
+
+    API -.-> Supabase
+    API -.-> Notion
+
+    classDef frontend fill:#6366f1,color:#fff,stroke:none
+    classDef backend fill:#0ea5e9,color:#fff,stroke:none
+    classDef data fill:#10b981,color:#fff,stroke:none
+    classDef ai fill:#f59e0b,color:#fff,stroke:none
+    classDef opt fill:#6b7280,color:#fff,stroke:none
+    classDef user fill:#ec4899,color:#fff,stroke:none
+
+    class UI,Pyodide,Zustand frontend
+    class API,AIService,GameSvc,CodeSvc,MCP backend
+    class PG,Redis data
+    class NVIDIA,OpenAI ai
+    class Supabase,Notion opt
+    class User user
+```
+
 ## Features
 
 ### Learning
