@@ -274,5 +274,183 @@
     "options": null,
     "xp_reward": 50,
     "order_index": 1
+  },
+  {
+    "lesson_slug": "while-loops",
+    "type": "fill_blank",
+    "title": "Count Down from 5",
+    "instructions": "Complete the while loop that counts down from 5 to 1, printing each number.",
+    "starter_code": "count = 5\nwhile count _____ 0:\n    print(count)\n    count _____",
+    "solution_code": "count = 5\nwhile count > 0:\n    print(count)\n    count -= 1",
+    "hints": [
+      "The loop should run while count is greater than 0.",
+      "You need to decrease count by 1 each iteration so the loop eventually stops.",
+      "Use > for the condition and -= 1 to decrease count."
+    ],
+    "test_cases": [{"input": "", "expected_output": "5\n4\n3\n2\n1"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "while-loops",
+    "type": "debug",
+    "title": "Fix the Infinite Loop",
+    "instructions": "This while loop is supposed to print numbers 1 through 3 then stop, but it runs forever. Fix the bug.",
+    "starter_code": "count = 1\nwhile count <= 3:\n    print(count)",
+    "solution_code": "count = 1\nwhile count <= 3:\n    print(count)\n    count += 1",
+    "hints": [
+      "The loop condition checks count <= 3 but count never changes.",
+      "Inside the loop body you must update the variable that the condition checks.",
+      "Add count += 1 as the last line inside the while block."
+    ],
+    "test_cases": [{"input": "", "expected_output": "1\n2\n3"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "dictionaries-basics",
+    "type": "fill_blank",
+    "title": "Access a Dictionary Value Safely",
+    "instructions": "Use .get() to access the 'email' key safely and print 'Not provided' if it doesn't exist.",
+    "starter_code": "person = {'name': 'Alice', 'age': 25}\nresult = person._____(_____, 'Not provided')\nprint(result)",
+    "solution_code": "person = {'name': 'Alice', 'age': 25}\nresult = person.get('email', 'Not provided')\nprint(result)",
+    "hints": [
+      "The .get() method accepts two arguments: the key and a default value.",
+      "If the key is not found, .get() returns the default value instead of raising a KeyError.",
+      "Use: person.get('email', 'Not provided')"
+    ],
+    "test_cases": [{"input": "", "expected_output": "Not provided"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "dictionaries-basics",
+    "type": "mcq",
+    "title": "Dictionary Access Methods",
+    "instructions": "What does `person.get('email', 'N/A')` return if 'email' is not in the dictionary?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "The second argument to .get() is the default value.",
+      "It is returned when the key doesn't exist — no error is raised."
+    ],
+    "test_cases": null,
+    "options": [
+      {"label": "None", "is_correct": false},
+      {"label": "'N/A'", "is_correct": true},
+      {"label": "KeyError", "is_correct": false},
+      {"label": "False", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "tuples-basics",
+    "type": "fill_blank",
+    "title": "Unpack a Tuple",
+    "instructions": "Unpack the coordinates tuple into separate x, y, z variables and print them.",
+    "starter_code": "coordinates = (10, 20, 30)\n_____, _____, _____ = coordinates\nprint(x)\nprint(y)\nprint(z)",
+    "solution_code": "coordinates = (10, 20, 30)\nx, y, z = coordinates\nprint(x)\nprint(y)\nprint(z)",
+    "hints": [
+      "Tuple unpacking assigns each element of the tuple to a separate variable.",
+      "The number of variables on the left must match the number of items in the tuple.",
+      "Use: x, y, z = coordinates"
+    ],
+    "test_cases": [{"input": "", "expected_output": "10\n20\n30"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "tuples-basics",
+    "type": "mcq",
+    "title": "Single-Item Tuple Syntax",
+    "instructions": "Which of the following correctly creates a tuple containing only the number 42?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "Parentheses alone don't make a tuple — the comma is what makes it a tuple.",
+      "A single-item tuple needs a trailing comma after the value."
+    ],
+    "test_cases": null,
+    "options": [
+      {"label": "(42)", "is_correct": false},
+      {"label": "(42,)", "is_correct": true},
+      {"label": "[42]", "is_correct": false},
+      {"label": "{42}", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sets-basics",
+    "type": "fill_blank",
+    "title": "Remove Duplicates with a Set",
+    "instructions": "Convert the list to a set to remove duplicates, then convert it back to a list and print its length.",
+    "starter_code": "numbers = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]\nunique = _____(numbers)\nresult = _____(unique)\nprint(len(result))",
+    "solution_code": "numbers = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]\nunique = set(numbers)\nresult = list(unique)\nprint(len(result))",
+    "hints": [
+      "Wrap the list in set() to automatically remove all duplicate values.",
+      "Then wrap the set in list() to convert it back to a list.",
+      "Use: set(numbers) and list(unique)"
+    ],
+    "test_cases": [{"input": "", "expected_output": "4"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sets-basics",
+    "type": "debug",
+    "title": "Fix the Empty Set Creation",
+    "instructions": "This code tries to create an empty set and add items to it, but it crashes. Fix the bug.",
+    "starter_code": "my_set = {}\nmy_set.add('python')\nmy_set.add('coding')\nprint(len(my_set))",
+    "solution_code": "my_set = set()\nmy_set.add('python')\nmy_set.add('coding')\nprint(len(my_set))",
+    "hints": [
+      "In Python, {} creates an empty dictionary, not an empty set.",
+      "To create an empty set you must call set() with no arguments.",
+      "Replace {} with set() — that's the only change needed."
+    ],
+    "test_cases": [{"input": "", "expected_output": "2"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "comprehensions",
+    "type": "fill_blank",
+    "title": "List Comprehension: Squares",
+    "instructions": "Use a list comprehension to build a list of squares (n ** 2) for numbers 1 through 5, then print it.",
+    "starter_code": "squares = [_____ for n in range(1, 6)]\nprint(squares)",
+    "solution_code": "squares = [n ** 2 for n in range(1, 6)]\nprint(squares)",
+    "hints": [
+      "The expression before 'for' defines what goes into the new list.",
+      "To square a number n, use n ** 2.",
+      "The full comprehension is: [n ** 2 for n in range(1, 6)]"
+    ],
+    "test_cases": [{"input": "", "expected_output": "[1, 4, 9, 16, 25]"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "comprehensions",
+    "type": "debug",
+    "title": "Fix the Dict Comprehension",
+    "instructions": "This dict comprehension should map each word to its length, but it has a syntax error. Fix it.",
+    "starter_code": "words = ['hi', 'hello', 'hey']\nlengths = {word len(word) for word in words}\nprint(lengths)",
+    "solution_code": "words = ['hi', 'hello', 'hey']\nlengths = {word: len(word) for word in words}\nprint(lengths)",
+    "hints": [
+      "A dict comprehension uses the format {key: value for item in iterable}.",
+      "The key and value must be separated by a colon.",
+      "Add a colon between 'word' and 'len(word)'."
+    ],
+    "test_cases": [{"input": "", "expected_output": "{'hi': 2, 'hello': 5, 'hey': 3}"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
   }
 ]
