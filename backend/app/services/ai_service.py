@@ -1,3 +1,4 @@
+import asyncio
 import json
 from openai import AsyncOpenAI
 
@@ -52,7 +53,7 @@ async def get_hint(code: str, exercise_title: str, hint_level: int) -> str:
         temperature=0.7,
         extra_body=_extra_body(),
     )
-    return response.choices[0].message.content.strip()
+    return (response.choices[0].message.content or "").strip()
 
 
 async def review_code(code: str, exercise_title: str = "") -> ReviewResponse:
@@ -146,32 +147,21 @@ async def chat(
     lesson_title: str = "",
     user_id: str = "anonymous",
 ) -> str:
-    """Stateful chat via LangGraph agent (falls back to direct call if agent fails)."""
-    try:
-        from app.services.ai_agent import agent_chat
-        return await agent_chat(
-            user_id=user_id,
-            message=message,
-            context_code=context_code,
-            lesson_title=lesson_title,
-        )
-    except Exception:
-        client = _make_client()
-        system = (
-            "You are an ADHD-friendly Python tutor. "
-            "Be concise, use bullet points, max 3 sentences."
-        )
-        user_msg = message
-        if context_code:
-            user_msg += f"\n\nCode:\n```python\n{context_code}\n```"
-        response = await client.chat.completions.create(
-            model=_model(),
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user_msg},
-            ],
-            max_tokens=500,
-            temperature=0.7,
-            extra_body=_extra_body(),
-        )
-        return response.choices[0].message.content.strip()
+    client = _make_client()
+    system = "You are an ADHD-friendly Python tutor. Be concise, use bullet points, max 3 sentences per point."
+    if lesson_title:
+        system += f" The student is studying: {lesson_title}."
+    user_msg = message
+    if context_code:
+        user_msg += f"\n\nCode:\n```python\n{context_code}\n```"
+    response = await client.chat.completions.create(
+        model=_model(),
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user_msg},
+        ],
+        max_tokens=500,
+        temperature=0.7,
+        # No extra_body here — extended thinking is too slow for real-time chat
+    )
+    return (response.choices[0].message.content or "").strip()
