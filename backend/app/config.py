@@ -1,6 +1,7 @@
 import warnings
 from pydantic_settings import BaseSettings
 from typing import List
+# Configuration — see .env.example for all supported variables
 
 _INSECURE_SECRET = "dev_secret_key_change_in_production"
 
