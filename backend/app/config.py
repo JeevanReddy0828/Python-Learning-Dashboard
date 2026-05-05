@@ -1,10 +1,13 @@
+import warnings
 from pydantic_settings import BaseSettings
 from typing import List
+
+_INSECURE_SECRET = "dev_secret_key_change_in_production"
 
 
 class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://adhd:adhd_secret@localhost:5432/adhd_dashboard"
-    secret_key: str = "dev_secret_key_change_in_production"
+    secret_key: str = _INSECURE_SECRET
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24  # 24 hours
     code_execution_timeout: int = 10
@@ -83,3 +86,9 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if settings.secret_key == _INSECURE_SECRET:
+    warnings.warn(
+        "SECRET_KEY is set to the insecure default. Set a strong SECRET_KEY in .env before deploying.",
+        stacklevel=1,
+    )

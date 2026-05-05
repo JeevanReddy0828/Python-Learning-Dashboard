@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import datetime, timezone
 
@@ -10,6 +11,8 @@ from app.database import get_db
 from app.deps import get_current_user
 from app.models.user import User
 from app.models.memory import ChatSession, ChatMessage
+
+logger = logging.getLogger(__name__)
 from app.schemas.ai import (
     HintRequest, HintResponse,
     ReviewRequest, ReviewResponse,
@@ -85,13 +88,13 @@ async def chat(
         session.last_message_at = datetime.now(timezone.utc)
         await db.commit()
     except Exception:
-        pass  # Never let history persistence break the chat response
+        logger.warning("Failed to persist chat history for user %s", current_user.id, exc_info=True)
 
     return ChatResponse(response=response)
 
 
 @router.post("/stream-chat")
-async def stream_chat(payload: ChatRequest, current_user: User = Depends(get_current_user)):
+async def stream_chat(payload: ChatRequest, _: User = Depends(get_current_user)):
     _check_ai_configured()
     return StreamingResponse(
         ai_service.stream_chat(payload.message, payload.context_code or "", payload.lesson_title or ""),
