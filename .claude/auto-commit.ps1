@@ -8,7 +8,7 @@ if (-not $staged) { exit 0 }
 # Build a meaningful message from the actual files changed
 $files   = $staged -split "`n" | Where-Object { $_ -ne "" }
 $count   = $files.Count
-$topFile = ($files[0] -split "/")[-1] -replace "\.(py|ts|tsx|js)$", ""
+$topFile = (($files[0] -split "/")[-1] -replace "\.(py|ts|tsx|js|json|md)$", "").Trim()
 
 $hasBackend    = $files | Where-Object { $_ -like "backend/*" }
 $hasFrontend   = $files | Where-Object { $_ -like "frontend/*" }
