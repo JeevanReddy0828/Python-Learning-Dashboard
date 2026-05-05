@@ -15,7 +15,6 @@ from app.schemas.ai import (
     ReviewRequest, ReviewResponse,
     ExplainRequest, ExplainResponse,
     ChatRequest, ChatResponse,
-    DevChatRequest, DevChatResponse,
 )
 from app.services import ai_service
 from app.config import settings
@@ -100,19 +99,3 @@ async def stream_chat(payload: ChatRequest, current_user: User = Depends(get_cur
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
-
-@router.post("/dev-chat", response_model=DevChatResponse)
-async def dev_chat(payload: DevChatRequest, current_user: User = Depends(get_current_user)):
-    _check_ai_configured()
-    response = await ai_service.dev_mode_chat(payload.mode, payload.input_text, payload.code or "")
-    return DevChatResponse(response=response, mode=payload.mode)
-
-
-@router.post("/stream-dev-chat")
-async def stream_dev_chat(payload: DevChatRequest, current_user: User = Depends(get_current_user)):
-    _check_ai_configured()
-    return StreamingResponse(
-        ai_service.stream_dev_chat(payload.mode, payload.input_text, payload.code or ""),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )

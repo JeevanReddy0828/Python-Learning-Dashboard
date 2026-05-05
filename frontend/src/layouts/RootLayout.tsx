@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   { to: '/learning-tools', icon: '🧠', label: 'Learning Tools' },
   { to: '/memory', icon: '🗄️', label: 'Memory Vault' },
   { to: '/dev-tools', icon: '🛠️', label: 'Dev Tools' },
-  { to: '/ai-workshop', icon: '🤖', label: 'AI Workshop' },
   { to: '/profile', icon: '👤', label: 'Profile' },
 ]
 
