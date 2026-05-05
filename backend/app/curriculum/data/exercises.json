@@ -452,5 +452,156 @@
     "options": null,
     "xp_reward": 20,
     "order_index": 2
+  },
+  {
+    "lesson_slug": "user-input",
+    "type": "fill_blank",
+    "title": "Ask for a Name",
+    "instructions": "Fill in the blank so the program asks the user for their name, then prints a greeting like: Hello, Alice!",
+    "starter_code": "name = _____('What is your name? ')\nprint('Hello, ' + name + '!')",
+    "solution_code": "name = input('What is your name? ')\nprint('Hello, ' + name + '!')",
+    "hints": [
+      "The built-in function that reads text from the user is called input().",
+      "Pass the prompt string inside the parentheses.",
+      "Use: name = input('What is your name? ')"
+    ],
+    "test_cases": [{"input": "Alice", "expected_output": "Hello, Alice!"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "user-input",
+    "type": "debug",
+    "title": "Fix the Age Calculator",
+    "instructions": "This program asks for the user's birth year and calculates their age, but it crashes. Fix it.",
+    "starter_code": "birth_year = input('Enter your birth year: ')\nage = 2024 - birth_year\nprint('You are', age, 'years old')",
+    "solution_code": "birth_year = input('Enter your birth year: ')\nage = 2024 - int(birth_year)\nprint('You are', age, 'years old')",
+    "hints": [
+      "input() always returns a string, even if the user types a number.",
+      "You cannot subtract a string from an integer directly.",
+      "Wrap birth_year with int() to convert it: int(birth_year)"
+    ],
+    "test_cases": [{"input": "2000", "expected_output": "You are 24 years old"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "reading-writing-files",
+    "type": "fill_blank",
+    "title": "Write to a File",
+    "instructions": "Fill in the blanks to open a file called 'note.txt' in write mode and write 'Hello, file!' to it, then print 'Done'.",
+    "starter_code": "with _____(\"note.txt\", _____) as f:\n    f.write(\"Hello, file!\")\nprint(\"Done\")",
+    "solution_code": "with open(\"note.txt\", \"w\") as f:\n    f.write(\"Hello, file!\")\nprint(\"Done\")",
+    "hints": [
+      "The function to open files in Python is open().",
+      "The second argument is the mode: 'r' for read, 'w' for write.",
+      "Use: open(\"note.txt\", \"w\")"
+    ],
+    "test_cases": [{"input": "", "expected_output": "Done"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "reading-writing-files",
+    "type": "mcq",
+    "title": "File Mode Quiz",
+    "instructions": "You want to add text to the END of an existing file without deleting its current content. Which mode should you use?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "'w' write mode erases the file first — dangerous for existing content.",
+      "'a' append mode moves the cursor to the end of the file, preserving existing content.",
+      "Think: Append = Add to the end."
+    ],
+    "test_cases": null,
+    "options": [
+      {"label": "open('file.txt', 'r')", "is_correct": false},
+      {"label": "open('file.txt', 'w')", "is_correct": false},
+      {"label": "open('file.txt', 'a')", "is_correct": true},
+      {"label": "open('file.txt', 'x')", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "try-except-errors",
+    "type": "fill_blank",
+    "title": "Catch a Division Error",
+    "instructions": "Fill in the blanks so the program safely handles division by zero and prints 'Cannot divide by zero' instead of crashing.",
+    "starter_code": "try:\n    result = 10 / 0\n    print(result)\n_____:\n    print('Cannot divide by zero')",
+    "solution_code": "try:\n    result = 10 / 0\n    print(result)\nexcept ZeroDivisionError:\n    print('Cannot divide by zero')",
+    "hints": [
+      "The keyword that catches errors is 'except'.",
+      "After 'except' you can specify the exact error type to catch.",
+      "Use: except ZeroDivisionError:"
+    ],
+    "test_cases": [{"input": "", "expected_output": "Cannot divide by zero"}],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "try-except-errors",
+    "type": "debug",
+    "title": "Fix the Safe Converter",
+    "instructions": "This function should convert a string to an integer and return -1 if it fails, but it always crashes. Fix it.",
+    "starter_code": "def safe_int(value):\n    try:\n        return int(value)\n    except:\n        return -1\n\nprint(safe_int('42'))\nprint(safe_int('abc'))",
+    "solution_code": "def safe_int(value):\n    try:\n        return int(value)\n    except ValueError:\n        return -1\n\nprint(safe_int('42'))\nprint(safe_int('abc'))",
+    "hints": [
+      "The code logic is actually fine — look at the except clause.",
+      "Using bare 'except:' works but catching a specific error like ValueError is better practice.",
+      "Replace 'except:' with 'except ValueError:' to be explicit."
+    ],
+    "test_cases": [{"input": "", "expected_output": "42\n-1"}],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "what-is-an-api",
+    "type": "mcq",
+    "title": "What Does API Stand For?",
+    "instructions": "What does API stand for?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "It's about how different software components talk to each other.",
+      "The 'I' stands for Interface.",
+      "Think: Application Programming Interface."
+    ],
+    "test_cases": null,
+    "options": [
+      {"label": "Automated Processing Integration", "is_correct": false},
+      {"label": "Application Programming Interface", "is_correct": true},
+      {"label": "Advanced Python Installer", "is_correct": false},
+      {"label": "Application Protocol Index", "is_correct": false}
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "what-is-an-api",
+    "type": "mcq",
+    "title": "HTTP Methods",
+    "instructions": "You want to FETCH data from an API without changing anything on the server. Which HTTP method should you use?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "There are 4 main HTTP methods: GET, POST, PUT, DELETE.",
+      "GET = read/fetch. POST = create. PUT = update. DELETE = remove.",
+      "Fetching data without changing anything = GET."
+    ],
+    "test_cases": null,
+    "options": [
+      {"label": "POST", "is_correct": false},
+      {"label": "DELETE", "is_correct": false},
+      {"label": "PUT", "is_correct": false},
+      {"label": "GET", "is_correct": true}
+    ],
+    "xp_reward": 10,
+    "order_index": 2
   }
 ]
