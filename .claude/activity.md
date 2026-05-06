@@ -9,3 +9,4 @@ test
 - 2026-05-06 17:37 session on backend
 - 2026-05-05 16:31 session on backend
 - 2026-05-06 15:00 session on backend
+- 2026-05-06 14:08 session on curriculum
