@@ -12,3 +12,4 @@ test
 - 2026-05-06 14:08 session on curriculum
 - 2026-05-07 20:10 session on curriculum
 - 2026-05-06 17:02 session on project
+- 2026-05-07 14:24 session on project
