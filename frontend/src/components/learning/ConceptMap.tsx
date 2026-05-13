@@ -152,14 +152,16 @@ interface Props {
 export default function ConceptMap({ onGenerated, restored }: Props) {
   const [topic, setTopic] = useState('')
   const [loading, setLoading] = useState(false)
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(() => {
+  const initialNodes: Node[] = (() => {
     if (restored) try { return JSON.parse(restored).nodes ?? [] } catch { return [] }
     return []
-  })
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(() => {
+  })()
+  const initialEdges: Edge[] = (() => {
     if (restored) try { return JSON.parse(restored).edges ?? [] } catch { return [] }
     return []
-  })
+  })()
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges)
   const [hasMap, setHasMap] = useState(!!restored)
 
   const generate = useCallback(async () => {

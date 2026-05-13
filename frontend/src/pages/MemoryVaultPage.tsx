@@ -230,7 +230,7 @@ function MemoryForm({
           <button
             key={k}
             type="button"
-            onClick={() => setType(k)}
+            onClick={() => setType(k as "note" | "code" | "insight" | "error_fix")}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
               type === k ? 'bg-primary-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
             }`}
