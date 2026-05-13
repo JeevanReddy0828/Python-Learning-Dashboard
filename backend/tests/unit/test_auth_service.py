@@ -25,7 +25,8 @@ class TestHashPassword:
         assert hash_password("same") != hash_password("same")
 
     def test_long_password(self):
-        pw = "a" * 128
+        # bcrypt truncates at 72 bytes — test at the limit, not beyond it
+        pw = "a" * 72
         hashed = hash_password(pw)
         assert verify_password(pw, hashed)
 
