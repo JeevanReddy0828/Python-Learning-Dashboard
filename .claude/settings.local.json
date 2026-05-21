@@ -13,7 +13,15 @@
       "Bash(python -c ' *)",
       "Skill(update-config)",
       "Skill(update-config:*)",
-      "PowerShell(Set-Location 'E:\\\\projects\\\\python-adhd dashboard'; git add -u; $diff = git diff --cached --name-only; if \\($diff\\) { Write-Output \"Would commit: $diff\" } else { Write-Output \"Nothing to commit — hook would skip\" })"
+      "PowerShell(Set-Location 'E:\\\\projects\\\\python-adhd dashboard'; git add -u; $diff = git diff --cached --name-only; if \\($diff\\) { Write-Output \"Would commit: $diff\" } else { Write-Output \"Nothing to commit — hook would skip\" })",
+      "Bash(python -c \"import json; data=json.load\\(open\\('backend/app/curriculum/data/lessons.json'\\)\\); print\\(len\\(data\\), 'lessons'\\); print\\('last slug:', data[-1]['slug']\\)\")",
+      "Bash(python -c \"import json; data=json.load\\(open\\('backend/app/curriculum/data/lessons.json', encoding='utf-8'\\)\\); print\\(len\\(data\\), 'lessons'\\); print\\('last slug:', data[-1]['slug']\\)\")",
+      "Bash(python -c \"import json; data=json.load\\(open\\('backend/app/curriculum/data/exercises.json', encoding='utf-8'\\)\\); print\\(len\\(data\\), 'exercises'\\); print\\('last lesson_slug:', data[-1]['lesson_slug']\\)\")",
+      "Bash(python backend/app/curriculum/add_sql_module.py)",
+      "Bash(python -m app.curriculum.seed)",
+      "Bash(del backend\\\\app\\\\curriculum\\\\add_sql_module.py)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
