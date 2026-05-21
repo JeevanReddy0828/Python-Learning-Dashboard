@@ -625,442 +625,500 @@ function VariablesPracticeVisual() {
 
 // ── SQL & Data visuals ───────────────────────────────────────────────────────
 
-function SqlBasicsVisual() {
-  // Animate: all rows → WHERE filter highlights matches → ORDER BY sorts
-  const rows = [
-    { name: 'Laptop',  category: 'Electronics', price: 999 },
-    { name: 'Book',    category: 'Books',        price: 15  },
-    { name: 'Monitor', category: 'Electronics',  price: 399 },
-    { name: 'Pen',     category: 'Books',        price: 3   },
-    { name: 'Phone',   category: 'Electronics',  price: 699 },
-  ]
-  const phases: Array<'all' | 'where' | 'ordered'> = ['all', 'where', 'ordered']
-  const [phase, setPhase] = useState<'all' | 'where' | 'ordered'>('all')
-  const [tick, setTick] = useState(0)
+// ── SQL & Data Visuals ────────────────────────────────────────────────────────
 
+function SqlDBThinkVisual() {
+  const [step, setStep] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setTick(t => t + 1), 1800)
+    const id = setInterval(() => setStep(s => (s + 1) % 4), 1600)
     return () => clearInterval(id)
   }, [])
-  useEffect(() => { setPhase(phases[tick % phases.length]) }, [tick])
-
-  const filtered = rows.filter(r => r.category === 'Electronics')
-  const ordered  = [...filtered].sort((a, b) => a.price - b.price)
-  const display  = phase === 'all' ? rows : phase === 'where' ? filtered : ordered
-
-  const clauseLabel = phase === 'all'
-    ? 'SELECT * FROM products'
-    : phase === 'where'
-    ? 'WHERE category = "Electronics"'
-    : 'ORDER BY price ASC'
-
+  const highlight = (idx: number) => idx === step ? '#7C3AED' : '#9CA3AF'
+  const fillH = (idx: number) => idx === step ? '#EDE9FE' : '#F9FAFB'
   return (
-    <svg viewBox="0 0 480 210" className="w-full max-w-lg mx-auto">
-      {/* Header */}
-      <rect x="40" y="10" width="400" height="26" rx="6" fill="#1E1E2E"/>
-      <text x="240" y="28" textAnchor="middle" fontSize="11" fill="#A6E22E" fontFamily="monospace">{clauseLabel}</text>
-
-      {/* Table header */}
-      <rect x="40" y="42" width="400" height="22" rx="4" fill="#7C3AED"/>
-      {['name', 'category', 'price'].map((h, i) => (
-        <text key={h} x={80 + i * 130} y="58" fontSize="10" fill="white" fontWeight="700">{h}</text>
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      {/* Departments table */}
+      <rect x="20" y="30" width="140" height="120" rx="8" fill={fillH(0)} stroke={highlight(0)} strokeWidth="2"/>
+      <rect x="20" y="30" width="140" height="28" rx="8" fill={highlight(0)}/>
+      <text x="90" y="50" textAnchor="middle" fontSize="11" fill="white" fontWeight="700">departments</text>
+      {['10 | Engineering','20 | Sales','30 | HR'].map((r,i)=>(
+        <text key={i} x="90" y={72+i*20} textAnchor="middle" fontSize="10" fill="#374151">{r}</text>
       ))}
-
-      {/* Rows */}
-      {display.map((row, i) => {
-        const y = 70 + i * 26
-        const isElectronics = row.category === 'Electronics'
-        const highlight = phase !== 'all' && isElectronics
-        return (
-          <g key={row.name} style={{ transition: 'all 0.5s ease' }}>
-            <rect x="40" y={y} width="400" height="24" rx="3"
-              fill={highlight ? '#EDE9FE' : i % 2 === 0 ? '#F9FAFB' : 'white'}
-              stroke={highlight ? '#7C3AED' : 'none'} strokeWidth="1.5"
-              style={{ transition: 'fill 0.5s' }}
-              opacity={phase === 'where' && !isElectronics ? 0.2 : 1}/>
-            <text x="80"  y={y + 16} fontSize="10" fill="#374151">{row.name}</text>
-            <text x="210" y={y + 16} fontSize="10" fill={highlight ? '#7C3AED' : '#374151'}>{row.category}</text>
-            <text x="340" y={y + 16} fontSize="10" fill={highlight ? '#059669' : '#374151'}>${row.price}</text>
-          </g>
-        )
-      })}
-
-      {/* Phase badge */}
-      <rect x="40" y="185" width="400" height="20" rx="6" fill={phase === 'ordered' ? '#D1FAE5' : '#EDE9FE'}
-        style={{ transition: 'fill 0.5s' }}/>
-      <text x="240" y="199" textAnchor="middle" fontSize="10" fontWeight="700"
-        fill={phase === 'ordered' ? '#059669' : '#7C3AED'} style={{ transition: 'color 0.5s' }}>
-        {phase === 'all' ? `${rows.length} rows returned` : phase === 'where' ? `${filtered.length} rows match WHERE` : `sorted cheapest → most expensive`}
+      {/* Employees table */}
+      <rect x="170" y="30" width="150" height="120" rx="8" fill={fillH(1)} stroke={highlight(1)} strokeWidth="2"/>
+      <rect x="170" y="30" width="150" height="28" rx="8" fill={highlight(1)}/>
+      <text x="245" y="50" textAnchor="middle" fontSize="11" fill="white" fontWeight="700">employees</text>
+      {['1 | Alice | dept 10','2 | Bob   | dept 20','3 | Carol | dept 10'].map((r,i)=>(
+        <text key={i} x="245" y={72+i*20} textAnchor="middle" fontSize="10" fill="#374151">{r}</text>
+      ))}
+      {/* FK arrow */}
+      <line x1="160" y1="92" x2="170" y2="92" stroke={highlight(2)} strokeWidth="2.5" markerEnd="url(#arr)"/>
+      <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill={highlight(2)}/></marker></defs>
+      {/* Roles table */}
+      <rect x="330" y="30" width="130" height="120" rx="8" fill={fillH(3)} stroke={highlight(3)} strokeWidth="2"/>
+      <rect x="330" y="30" width="130" height="28" rx="8" fill={highlight(3)}/>
+      <text x="395" y="50" textAnchor="middle" fontSize="11" fill="white" fontWeight="700">roles</text>
+      {['1 | Engineer','2 | Manager','3 | Analyst'].map((r,i)=>(
+        <text key={i} x="395" y={72+i*20} textAnchor="middle" fontSize="10" fill="#374151">{r}</text>
+      ))}
+      <line x1="320" y1="92" x2="330" y2="92" stroke={highlight(2)} strokeWidth="2.5" markerEnd="url(#arr)"/>
+      {/* Label */}
+      <text x="240" y="168" textAnchor="middle" fontSize="11" fill="#6B7280">
+        {['Tables store data','FK links employees→dept','FK links employees→roles','Keys = relational power'][step]}
       </text>
     </svg>
   )
 }
 
-function PythonSqliteVisual() {
-  // Animate: Python code → execute() arrow → SQLite file, rows accumulate
-  const [rowCount, setRowCount] = useState(0)
-  const [phase, setPhase] = useState<'idle' | 'sending' | 'saved'>('idle')
-
-  const sampleRows = [
-    { name: 'Alice', score: 95 },
-    { name: 'Bob',   score: 88 },
-    { name: 'Carol', score: 92 },
-  ]
-
+function SqlSelectVisual() {
+  const cols = ['employee_id','first_name','last_name','department','salary','hire_date']
+  const [selected, setSelected] = useState([1,3,4])
   useEffect(() => {
-    const cycle = async () => {
-      setPhase('idle'); await new Promise(r => setTimeout(r, 600))
-      setPhase('sending'); await new Promise(r => setTimeout(r, 700))
-      setPhase('saved')
-      setRowCount(c => c < sampleRows.length ? c + 1 : 1)
-    }
-    const id = setInterval(cycle, 1800)
+    const combos = [[1,3,4],[0,1,2],[1,4],[0,1,2,3,4,5]]
+    let i = 0
+    const id = setInterval(() => { i=(i+1)%combos.length; setSelected(combos[i]) }, 1800)
     return () => clearInterval(id)
   }, [])
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      <text x="240" y="22" textAnchor="middle" fontSize="11" fill="#6B7280">SELECT picks only the columns you need</text>
+      {cols.map((c,i) => {
+        const x = 16 + i*77
+        const sel = selected.includes(i)
+        return (
+          <g key={c}>
+            <rect x={x} y="35" width="70" height="100" rx="8"
+              fill={sel ? '#EDE9FE' : '#F3F4F6'} stroke={sel ? '#7C3AED' : '#D1D5DB'}
+              strokeWidth={sel ? 2.5 : 1.5}
+              style={{ filter: sel ? 'drop-shadow(0 2px 6px #7C3AED44)' : 'none', transition: 'all 0.4s' }}/>
+            <text x={x+35} y="55" textAnchor="middle" fontSize="9" fill={sel?'#7C3AED':'#9CA3AF'} fontWeight={sel?700:400}
+              style={{ transition: 'all 0.4s' }}>{c.replace('_','\n')}</text>
+            {sel && <text x={x+35} y="95" textAnchor="middle" fontSize="18" fill="#7C3AED">✓</text>}
+            <text x={x+35} y="122" textAnchor="middle" fontSize="9" fill="#9CA3AF">col {i+1}</text>
+          </g>
+        )
+      })}
+      <text x="240" y="165" textAnchor="middle" fontSize="11" fill="#7C3AED" fontWeight="600">
+        SELECT {selected.map(i=>cols[i]).join(', ')}
+      </text>
+    </svg>
+  )
+}
 
-  const arrowColor = phase === 'sending' ? '#7C3AED' : '#E5E7EB'
+function SqlWhereVisual() {
+  const rows = [
+    { name:'Alice', dept:'Eng', salary:85000 },
+    { name:'Bob',   dept:'Sales', salary:62000 },
+    { name:'Carol', dept:'Eng', salary:90000 },
+    { name:'Dave',  dept:'HR',  salary:55000 },
+    { name:'Eve',   dept:'Eng', salary:78000 },
+  ]
+  const [threshold, setThreshold] = useState(70000)
+  useEffect(() => {
+    const vals = [70000, 80000, 60000, 90000, 55000]
+    let i = 0
+    const id = setInterval(() => { i=(i+1)%vals.length; setThreshold(vals[i]) }, 1800)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#6B7280">
+        {`WHERE salary > ${threshold.toLocaleString()}`}
+      </text>
+      {rows.map((r,i) => {
+        const pass = r.salary > threshold
+        const y = 30 + i * 28
+        return (
+          <g key={r.name} style={{ opacity: pass ? 1 : 0.35, transition: 'all 0.4s' }}>
+            <rect x="40" y={y} width="400" height="24" rx="6"
+              fill={pass ? '#D1FAE5' : '#F3F4F6'} stroke={pass ? '#10B981' : '#E5E7EB'} strokeWidth="1.5"/>
+            <text x="100" y={y+16} textAnchor="middle" fontSize="11" fill={pass?'#065F46':'#9CA3AF'} fontWeight={pass?600:400}>{r.name}</text>
+            <text x="220" y={y+16} textAnchor="middle" fontSize="11" fill={pass?'#065F46':'#9CA3AF'}>{r.dept}</text>
+            <text x="340" y={y+16} textAnchor="middle" fontSize="11" fill={pass?'#065F46':'#9CA3AF'} fontWeight="600">
+              ${r.salary.toLocaleString()}
+            </text>
+            <text x="435" y={y+16} textAnchor="middle" fontSize="14">{pass ? '✅' : '❌'}</text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
 
+function SqlSortingVisual() {
+  const items = [
+    { name:'Carol', salary:90000 },
+    { name:'Alice', salary:85000 },
+    { name:'Eve',   salary:78000 },
+    { name:'Bob',   salary:62000 },
+    { name:'Dave',  salary:55000 },
+  ]
+  const [mode, setMode] = useState<'unsorted'|'asc'|'desc'|'limit3'>('unsorted')
+  useEffect(() => {
+    const modes: Array<'unsorted'|'asc'|'desc'|'limit3'> = ['unsorted','desc','asc','limit3']
+    let i=0
+    const id = setInterval(() => { i=(i+1)%modes.length; setMode(modes[i]) }, 1800)
+    return () => clearInterval(id)
+  }, [])
+  const shuffled = [...items].sort(() => 0.17)
+  const asc  = [...items].sort((a,b)=>a.salary-b.salary)
+  const desc = [...items].sort((a,b)=>b.salary-a.salary)
+  const display = mode==='unsorted' ? shuffled : mode==='asc' ? asc : mode==='desc' ? desc : desc.slice(0,3)
+  const labels: Record<string, string> = {
+    unsorted: 'No ORDER BY — random order',
+    asc: 'ORDER BY salary ASC',
+    desc: 'ORDER BY salary DESC',
+    limit3: 'ORDER BY salary DESC LIMIT 3',
+  }
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#7C3AED" fontWeight="600">{labels[mode]}</text>
+      {display.map((r,i) => (
+        <g key={r.name+mode} style={{ transition: 'all 0.5s' }}>
+          <rect x="80" y={28+i*28} width="320" height="24" rx="7"
+            fill={mode==='limit3' ? '#EDE9FE' : '#F9FAFB'} stroke={mode==='limit3'?'#7C3AED':'#E5E7EB'} strokeWidth="1.5"/>
+          <text x="200" y={44+i*28} textAnchor="middle" fontSize="12" fill="#374151" fontWeight="500">{r.name}</text>
+          <text x="340" y={44+i*28} textAnchor="middle" fontSize="12" fill="#7C3AED" fontWeight="700">${r.salary.toLocaleString()}</text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+function SqlAggregatesVisual() {
+  const rows = [85000, 62000, 90000, 55000, 78000]
+  const [phase, setPhase] = useState<'rows'|'count'|'sum'|'avg'>('rows')
+  useEffect(() => {
+    const phases: Array<'rows'|'count'|'sum'|'avg'> = ['rows','count','sum','avg']
+    let i=0
+    const id = setInterval(() => { i=(i+1)%phases.length; setPhase(phases[i]) }, 2000)
+    return () => clearInterval(id)
+  }, [])
+  const total = rows.reduce((a,b)=>a+b,0)
+  const avg = Math.round(total/rows.length)
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      {phase==='rows' && rows.map((v,i)=>(
+        <g key={i}>
+          <rect x={36+i*84} y="40" width="72" height="90" rx="8" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.5"/>
+          <text x={72+i*84} y="92" textAnchor="middle" fontSize="13" fill="#7C3AED" fontWeight="700">${(v/1000).toFixed(0)}k</text>
+        </g>
+      ))}
+      {phase!=='rows' && (
+        <g>
+          <rect x="160" y="30" width="160" height="100" rx="14" fill="#D1FAE5" stroke="#10B981" strokeWidth="3"
+            style={{ filter: 'drop-shadow(0 4px 12px #10B98144)' }}/>
+          <text x="240" y="70" textAnchor="middle" fontSize="13" fill="#065F46" fontWeight="700">
+            {phase==='count' ? 'COUNT(*)' : phase==='sum' ? 'SUM(salary)' : 'AVG(salary)'}
+          </text>
+          <text x="240" y="105" textAnchor="middle" fontSize="26" fill="#065F46" fontWeight="800">
+            {phase==='count' ? '5' : phase==='sum' ? `$${(total/1000).toFixed(0)}k` : `$${(avg/1000).toFixed(0)}k`}
+          </text>
+        </g>
+      )}
+      <text x="240" y="168" textAnchor="middle" fontSize="11" fill="#6B7280">
+        {phase==='rows' ? '5 individual rows' : `${phase.toUpperCase()}() collapses rows into one answer`}
+      </text>
+    </svg>
+  )
+}
+
+function SqlJoinsDeepVisual() {
+  const [joinType, setJoinType] = useState<'inner'|'left'|'full'>('inner')
+  useEffect(() => {
+    const types: Array<'inner'|'left'|'full'> = ['inner','left','full']
+    let i=0
+    const id = setInterval(() => { i=(i+1)%types.length; setJoinType(types[i]) }, 2000)
+    return () => clearInterval(id)
+  }, [])
+  const leftRows  = ['Alice (dept 10)','Bob (dept 20)','Carol (no dept)']
+  const rightRows = ['10: Engineering','20: Sales']
+  const matched   = ['Alice → Engineering','Bob → Sales']
+  const leftOnly  = ['Carol → NULL']
+  const display = joinType==='inner' ? matched
+                : joinType==='left'  ? [...matched, ...leftOnly]
+                : [...matched, ...leftOnly, 'NULL ← Finance']
+  const colors: Record<string, string> = { inner:'#10B981', left:'#3B82F6', full:'#8B5CF6' }
   return (
     <svg viewBox="0 0 480 190" className="w-full max-w-lg mx-auto">
-      {/* Python code panel */}
-      <rect x="10" y="15" width="175" height="130" rx="10" fill="#1E1E2E"/>
-      <circle cx="30" cy="30" r="5" fill="#FF5F56"/>
-      <circle cx="46" cy="30" r="5" fill="#FFBD2E"/>
-      <circle cx="62" cy="30" r="5" fill="#27C93F"/>
-      <text x="20" y="52"  fontSize="9" fill="#66D9E8" fontFamily="monospace">conn = sqlite3</text>
-      <text x="20" y="66"  fontSize="9" fill="#66D9E8" fontFamily="monospace">  .connect('db')</text>
-      <text x="20" y="84"  fontSize="9" fill="#A6E22E" fontFamily="monospace">conn.execute(</text>
-      <text x="20" y="98"  fontSize="9" fill="#E6DB74" fontFamily="monospace">  'INSERT ...',</text>
-      <text x="20" y="112" fontSize="9" fill="#AE81FF" fontFamily="monospace">  ('Alice', 95)</text>
-      <text x="20" y="126" fontSize="9" fill="#A6E22E" fontFamily="monospace">)</text>
-      <text x="20" y="140" fontSize="9" fill="#75715E" fontFamily="monospace">conn.commit()</text>
-
-      {/* Animated arrow */}
-      <line x1="188" y1="80" x2="265" y2="80" stroke={arrowColor} strokeWidth="2.5"
-        strokeDasharray={phase === 'sending' ? '0' : '6,4'}
-        style={{ transition: 'stroke 0.3s' }}/>
-      <polygon points="262,74 274,80 262,86" fill={arrowColor} style={{ transition: 'fill 0.3s' }}/>
-      {phase === 'sending' && (
-        <rect x="205" y="68" width="44" height="24" rx="6" fill="#7C3AED">
-          <animate attributeName="x" from="188" to="255" dur="0.7s" fill="freeze"/>
-        </rect>
-      )}
-      {phase === 'sending' && (
-        <text x="227" y="84" textAnchor="middle" fontSize="9" fill="white" fontWeight="700">INSERT</text>
-      )}
-      <text x="228" y="65" textAnchor="middle" fontSize="9" fill={arrowColor}>execute()</text>
-
-      {/* SQLite file */}
-      <rect x="275" y="30" width="100" height="120" rx="10" fill="#F3F4F6" stroke="#7C3AED" strokeWidth="2"/>
-      <rect x="275" y="30" width="28" height="28" rx="4" fill="#7C3AED"/>
-      <text x="275" y="46" fontSize="7" fill="white" fontWeight="700" dx="4">SQL</text>
-      <text x="325" y="62" textAnchor="middle" fontSize="9" fill="#374151" fontWeight="700">students.db</text>
-
-      {/* Rows in file */}
-      {sampleRows.slice(0, rowCount).map((r, i) => (
-        <g key={r.name}>
-          <rect x="283" y={72 + i * 22} width="84" height="18" rx="4"
-            fill={i === rowCount - 1 && phase === 'saved' ? '#EDE9FE' : 'white'}
-            stroke="#E5E7EB" strokeWidth="1"
-            style={{ transition: 'fill 0.4s' }}/>
-          <text x="288" y={84 + i * 22} fontSize="8" fill="#374151">{r.name} | {r.score}</text>
+      <text x="240" y="18" textAnchor="middle" fontSize="12" fill={colors[joinType]} fontWeight="700">
+        {joinType.toUpperCase()} JOIN
+      </text>
+      {/* Left table */}
+      {leftRows.map((r,i)=>(
+        <rect key={i} x="10" y={32+i*28} width="140" height="24" rx="6"
+          fill={joinType!=='inner'||i<2?'#EDE9FE':'#F3F4F6'} stroke="#7C3AED" strokeWidth="1"/>
+      ))}
+      {leftRows.map((r,i)=>(
+        <text key={i} x="80" y={48+i*28} textAnchor="middle" fontSize="9.5" fill="#374151">{r}</text>
+      ))}
+      {/* Right table */}
+      {rightRows.map((r,i)=>(
+        <rect key={i} x="330" y={46+i*28} width="140" height="24" rx="6" fill="#D1FAE5" stroke="#10B981" strokeWidth="1"/>
+      ))}
+      {rightRows.map((r,i)=>(
+        <text key={i} x="400" y={62+i*28} textAnchor="middle" fontSize="9.5" fill="#374151">{r}</text>
+      ))}
+      {/* Result */}
+      {display.map((r,i)=>(
+        <g key={i}>
+          <rect x="155" y={118+i*26} width="170" height="22" rx="6"
+            fill={r.includes('NULL')?'#FEF3C7':'#F0FDF4'} stroke={r.includes('NULL')?'#D97706':'#10B981'} strokeWidth="1.5"/>
+          <text x="240" y={133+i*26} textAnchor="middle" fontSize="9.5" fill="#374151">{r}</text>
         </g>
       ))}
-
-      {/* Placeholder rows */}
-      {Array.from({ length: 3 - rowCount }).map((_, i) => (
-        <rect key={i} x="283" y={72 + (rowCount + i) * 22} width="84" height="18" rx="4"
-          fill="#F9FAFB" stroke="#E5E7EB" strokeWidth="1" strokeDasharray="3"/>
-      ))}
-
-      {/* conn.commit badge */}
-      <rect x="390" y="55" width="82" height="50" rx="8" fill={phase === 'saved' ? '#D1FAE5' : '#F9FAFB'}
-        stroke={phase === 'saved' ? '#059669' : '#E5E7EB'} strokeWidth="1.5"
-        style={{ transition: 'all 0.4s' }}/>
-      <text x="431" y="77" textAnchor="middle" fontSize="9" fill={phase === 'saved' ? '#059669' : '#9CA3AF'}
-        fontWeight="700">commit()</text>
-      <text x="431" y="94" textAnchor="middle" fontSize="16">
-        {phase === 'saved' ? '✅' : '⏳'}
-      </text>
-
-      <text x="240" y="176" textAnchor="middle" fontSize="10" fill="#6B7280">
-        Always use ? placeholders — never f-strings. Always commit() after writes.
-      </text>
+      <text x="240" y="100" textAnchor="middle" fontSize="10" fill={colors[joinType]} fontWeight="600">Result ({display.length} rows)</text>
     </svg>
   )
 }
 
-function SqlJoinsVisual() {
-  // Two tables slide toward each other, matching rows connect with lines
-  const [phase, setPhase] = useState<'apart' | 'joining' | 'joined'>('apart')
-  const [tick, setTick] = useState(0)
-
+function SqlCTEVisual() {
+  const [step, setStep] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setTick(t => t + 1), 2000)
+    const id = setInterval(() => setStep(s=>(s+1)%3), 1800)
     return () => clearInterval(id)
   }, [])
-  useEffect(() => {
-    const seq: Array<'apart' | 'joining' | 'joined'> = ['apart', 'joining', 'joined']
-    setPhase(seq[tick % seq.length])
-  }, [tick])
-
-  const customers = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }, { id: 3, name: 'Carol' }]
-  const orders    = [{ cid: 1, amt: 120 }, { cid: 2, amt: 45 }, { cid: 1, amt: 200 }]
-
-  const leftX  = phase === 'apart' ? 20  : phase === 'joining' ? 55  : 55
-  const rightX = phase === 'apart' ? 310 : phase === 'joining' ? 270 : 270
-
-  return (
-    <svg viewBox="0 0 480 210" className="w-full max-w-lg mx-auto">
-      {/* Phase label */}
-      <rect x="140" y="8" width="200" height="20" rx="6" fill="#7C3AED"/>
-      <text x="240" y="22" textAnchor="middle" fontSize="10" fill="white" fontWeight="700">
-        {phase === 'apart' ? 'Two separate tables' : phase === 'joining' ? 'JOIN ON customer_id = id' : '✓ Rows matched!'}
-      </text>
-
-      {/* Customers table */}
-      <g style={{ transform: `translateX(${phase !== 'apart' ? 35 : 0}px)`, transition: 'transform 0.7s ease' }}>
-        <rect x={leftX} y="35" width="130" height="22" rx="4" fill="#2563EB"/>
-        <text x={leftX + 65} y="51" textAnchor="middle" fontSize="10" fill="white" fontWeight="700">customers</text>
-        {customers.map((c, i) => (
-          <g key={c.id}>
-            <rect x={leftX} y={60 + i * 28} width="130" height="24" rx="3"
-              fill={phase === 'joined' ? '#DBEAFE' : '#F9FAFB'} stroke="#BFDBFE" strokeWidth="1.5"
-              style={{ transition: 'fill 0.5s' }}/>
-            <text x={leftX + 12} y={76 + i * 28} fontSize="9" fill="#374151">id={c.id}  {c.name}</text>
-          </g>
-        ))}
-      </g>
-
-      {/* Orders table */}
-      <g style={{ transform: `translateX(${phase !== 'apart' ? -35 : 0}px)`, transition: 'transform 0.7s ease' }}>
-        <rect x={rightX} y="35" width="130" height="22" rx="4" fill="#059669"/>
-        <text x={rightX + 65} y="51" textAnchor="middle" fontSize="10" fill="white" fontWeight="700">orders</text>
-        {orders.map((o, i) => (
-          <g key={i}>
-            <rect x={rightX} y={60 + i * 28} width="130" height="24" rx="3"
-              fill={phase === 'joined' ? '#D1FAE5' : '#F9FAFB'} stroke="#A7F3D0" strokeWidth="1.5"
-              style={{ transition: 'fill 0.5s' }}/>
-            <text x={rightX + 12} y={76 + i * 28} fontSize="9" fill="#374151">cid={o.cid}  ${o.amt}</text>
-          </g>
-        ))}
-      </g>
-
-      {/* Join lines when joined */}
-      {phase === 'joined' && (
-        <>
-          <line x1="185" y1="72"  x2="270" y2="72"  stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="4" opacity="0.7"/>
-          <line x1="185" y1="100" x2="270" y2="100" stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="4" opacity="0.7"/>
-          <line x1="185" y1="72"  x2="270" y2="128" stroke="#7C3AED" strokeWidth="1.5" strokeDasharray="4" opacity="0.5"/>
-        </>
-      )}
-
-      {/* Result preview when joined */}
-      {phase === 'joined' && (
-        <g>
-          <rect x="110" y="170" width="260" height="30" rx="8" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.5"/>
-          <text x="240" y="183" textAnchor="middle" fontSize="9" fill="#7C3AED" fontWeight="700">Alice→$120, Bob→$45, Alice→$200</text>
-          <text x="240" y="195" textAnchor="middle" fontSize="8" fill="#9CA3AF">Combined result: customer name + order amount</text>
-        </g>
-      )}
-
-      {phase !== 'joined' && (
-        <text x="240" y="185" textAnchor="middle" fontSize="10" fill="#9CA3AF">
-          {phase === 'apart' ? 'Data split across two tables to avoid repetition' : 'Matching rows on the shared key…'}
-        </text>
-      )}
-    </svg>
-  )
-}
-
-function PandasVisual() {
-  // Show a DataFrame: full grid → filter dims rows → groupby collapses to summary
-  const [phase, setPhase] = useState<'full' | 'filter' | 'group'>('full')
-  const [tick, setTick] = useState(0)
-
-  useEffect(() => {
-    const id = setInterval(() => setTick(t => t + 1), 2000)
-    return () => clearInterval(id)
-  }, [])
-  useEffect(() => {
-    const seq: Array<'full' | 'filter' | 'group'> = ['full', 'filter', 'group']
-    setPhase(seq[tick % seq.length])
-  }, [tick])
-
-  const rows = [
-    { name: 'Alice', dept: 'Eng',   salary: 90000 },
-    { name: 'Bob',   dept: 'Sales', salary: 65000 },
-    { name: 'Carol', dept: 'Eng',   salary: 95000 },
-    { name: 'Dave',  dept: 'HR',    salary: 72000 },
-    { name: 'Eve',   dept: 'Eng',   salary: 88000 },
+  const steps = [
+    { label: 'WITH dept_avg AS (', color: '#7C3AED', y: 30 },
+    { label: '  SELECT dept, AVG(salary)', color: '#3B82F6', y: 78 },
+    { label: 'SELECT * FROM dept_avg...', color: '#10B981', y: 126 },
   ]
-  const groups = [
-    { dept: 'Eng',   avg: 91000 },
-    { dept: 'Sales', avg: 65000 },
-    { dept: 'HR',    avg: 72000 },
-  ]
-
   return (
-    <svg viewBox="0 0 480 215" className="w-full max-w-lg mx-auto">
-      {/* Phase label strip */}
-      <rect x="60" y="6" width="360" height="20" rx="6" fill="#1E1E2E"/>
-      <text x="240" y="20" textAnchor="middle" fontSize="10" fill="#A6E22E" fontFamily="monospace">
-        {phase === 'full'   ? 'df  →  5 rows' :
-         phase === 'filter' ? "df[df['salary'] > 80000]  →  3 rows" :
-                              "df.groupby('dept')['salary'].mean()"}
-      </text>
-
-      {/* Column headers */}
-      <rect x="40" y="32" width="400" height="20" rx="4" fill="#7C3AED"/>
-      {['name', 'dept', 'salary'].map((h, i) => (
-        <text key={h} x={75 + i * 130} y="46" fontSize="10" fill="white" fontWeight="700">{h}</text>
-      ))}
-
-      {/* DataFrame rows */}
-      {phase !== 'group' && rows.map((row, i) => {
-        const y = 55 + i * 26
-        const passes = row.salary > 80000
-        const dim = phase === 'filter' && !passes
+    <svg viewBox="0 0 480 175" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#6B7280">CTEs: name a query, reuse it</text>
+      {steps.map((s,i)=>{
+        const active = i===step
         return (
-          <g key={row.name} style={{ opacity: dim ? 0.18 : 1, transition: 'opacity 0.5s' }}>
-            <rect x="40" y={y} width="400" height="24" rx="3"
-              fill={phase === 'filter' && passes ? '#EDE9FE' : i % 2 === 0 ? '#F9FAFB' : 'white'}
-              stroke={phase === 'filter' && passes ? '#7C3AED' : 'none'} strokeWidth="1.5"
-              style={{ transition: 'fill 0.5s' }}/>
-            <text x="75"  y={y + 16} fontSize="10" fill="#374151">{row.name}</text>
-            <text x="205" y={y + 16} fontSize="10" fill="#374151">{row.dept}</text>
-            <text x="335" y={y + 16} fontSize="10"
-              fill={phase === 'filter' && passes ? '#7C3AED' : '#374151'}
-              fontWeight={phase === 'filter' && passes ? '700' : '400'}>
-              ${row.salary.toLocaleString()}
+          <g key={i}>
+            <rect x="60" y={s.y} width="360" height="40" rx="10"
+              fill={active?s.color+'22':'#F9FAFB'} stroke={active?s.color:'#E5E7EB'} strokeWidth={active?2.5:1.5}
+              style={{ transition:'all 0.4s', filter: active?`drop-shadow(0 3px 8px ${s.color}44)`:'none' }}/>
+            <text x="240" y={s.y+25} textAnchor="middle" fontSize="12" fill={active?s.color:'#9CA3AF'}
+              fontWeight={active?700:400} style={{ transition:'all 0.4s', fontFamily:'monospace' }}>
+              {s.label}
             </text>
+            {i<steps.length-1 && <line x1="240" y1={s.y+40} x2="240" y2={steps[i+1].y} stroke="#D1D5DB" strokeWidth="1.5" strokeDasharray="4"/>}
           </g>
         )
       })}
-
-      {/* GroupBy result */}
-      {phase === 'group' && (
-        <>
-          <rect x="40" y="55" width="400" height="20" rx="3" fill="#D1FAE5" stroke="#059669" strokeWidth="1.5"/>
-          <text x="75"  y="69" fontSize="10" fill="#065F46" fontWeight="700">dept</text>
-          <text x="250" y="69" fontSize="10" fill="#065F46" fontWeight="700">mean salary</text>
-          {groups.map((g, i) => (
-            <g key={g.dept}>
-              <rect x="40" y={79 + i * 28} width="400" height="24" rx="3"
-                fill={i % 2 === 0 ? '#F0FDF4' : 'white'} stroke="#D1FAE5" strokeWidth="1"/>
-              <text x="75"  y={95 + i * 28} fontSize="11" fill="#059669" fontWeight="700">{g.dept}</text>
-              <text x="250" y={95 + i * 28} fontSize="11" fill="#374151">${g.avg.toLocaleString()}</text>
-              {/* Bar */}
-              <rect x="330" y={83 + i * 28} width={(g.avg / 100000) * 90} height="14" rx="4" fill="#059669" opacity="0.6"/>
-            </g>
-          ))}
-        </>
-      )}
-
-      {/* Bottom legend */}
-      <text x="240" y="202" textAnchor="middle" fontSize="10" fill="#6B7280">
-        {phase === 'full'   ? 'DataFrame = smart spreadsheet in Python memory' :
-         phase === 'filter' ? 'Boolean mask: only rows where salary > 80k pass through' :
-                              'groupby() + mean() → one summary row per group'}
+      <text x="240" y="170" textAnchor="middle" fontSize="11" fill="#6B7280">
+        {['Step 1: Define the CTE','Step 2: Build the query','Step 3: Use it like a table'][step]}
       </text>
     </svg>
   )
 }
 
-function DataPipelineVisual() {
-  // Animated pipeline: SQLite → SQL query → pandas DataFrame → bar chart
-  const [step, setStep] = useState(0)
-  const steps = ['db', 'query', 'df', 'chart']
-
+function SqlWindowVisual() {
+  const rows = [
+    { name:'Carol', dept:'Eng', salary:90000 },
+    { name:'Alice', dept:'Eng', salary:85000 },
+    { name:'Eve',   dept:'Eng', salary:78000 },
+    { name:'Bob',   dept:'Sales', salary:62000 },
+    { name:'Dave',  dept:'Sales', salary:55000 },
+  ]
+  const [highlighted, setHighlighted] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setStep(s => (s + 1) % steps.length), 1400)
+    const id = setInterval(() => setHighlighted(h=>(h+1)%rows.length), 900)
     return () => clearInterval(id)
   }, [])
-
-  const active = (i: number) => step >= i
-  const barData = [{ label: 'Edu', val: 80, color: '#7C3AED' }, { label: 'HW', val: 60, color: '#2563EB' }, { label: 'SW', val: 20, color: '#059669' }]
-
+  const rank = rows.map((r,i) => {
+    const deptRows = rows.filter(x=>x.dept===r.dept).sort((a,b)=>b.salary-a.salary)
+    return deptRows.findIndex(x=>x.name===r.name)+1
+  })
   return (
-    <svg viewBox="0 0 480 200" className="w-full max-w-lg mx-auto">
-      {/* Step 1 — SQLite DB */}
-      <g opacity={active(0) ? 1 : 0.2} style={{ transition: 'opacity 0.5s' }}>
-        <rect x="10" y="55" width="90" height="90" rx="12" fill={active(0) ? '#EDE9FE' : '#F3F4F6'} stroke="#7C3AED" strokeWidth="2"/>
-        <text x="55" y="92" textAnchor="middle" fontSize="22">🗃️</text>
-        <text x="55" y="112" textAnchor="middle" fontSize="9" fill="#7C3AED" fontWeight="700">SQLite</text>
-        <text x="55" y="126" textAnchor="middle" fontSize="8" fill="#9CA3AF">sales.db</text>
-        <text x="55" y="158" textAnchor="middle" fontSize="8" fill="#7C3AED">Step 1</text>
-      </g>
-
-      {/* Arrow 1 */}
-      <g opacity={active(1) ? 1 : 0.15} style={{ transition: 'opacity 0.5s' }}>
-        <line x1="100" y1="100" x2="125" y2="100" stroke="#7C3AED" strokeWidth="2.5"/>
-        <polygon points="122,94 133,100 122,106" fill="#7C3AED"/>
-        <text x="112" y="88" textAnchor="middle" fontSize="8" fill="#7C3AED">SQL</text>
-      </g>
-
-      {/* Step 2 — SQL Query box */}
-      <g opacity={active(1) ? 1 : 0.2} style={{ transition: 'opacity 0.5s' }}>
-        <rect x="133" y="55" width="95" height="90" rx="12" fill={active(1) ? '#DBEAFE' : '#F3F4F6'} stroke="#2563EB" strokeWidth="2"/>
-        <text x="180" y="83" textAnchor="middle" fontSize="8" fill="#2563EB" fontFamily="monospace">SELECT</text>
-        <text x="180" y="97" textAnchor="middle" fontSize="8" fill="#2563EB" fontFamily="monospace">SUM(qty</text>
-        <text x="180" y="111" textAnchor="middle" fontSize="8" fill="#2563EB" fontFamily="monospace">* price)</text>
-        <text x="180" y="125" textAnchor="middle" fontSize="8" fill="#2563EB" fontFamily="monospace">GROUP BY</text>
-        <text x="180" y="158" textAnchor="middle" fontSize="8" fill="#2563EB">Step 2</text>
-      </g>
-
-      {/* Arrow 2 */}
-      <g opacity={active(2) ? 1 : 0.15} style={{ transition: 'opacity 0.5s' }}>
-        <line x1="228" y1="100" x2="253" y2="100" stroke="#059669" strokeWidth="2.5"/>
-        <polygon points="250,94 261,100 250,106" fill="#059669"/>
-        <text x="240" y="88" textAnchor="middle" fontSize="8" fill="#059669">pandas</text>
-      </g>
-
-      {/* Step 3 — DataFrame */}
-      <g opacity={active(2) ? 1 : 0.2} style={{ transition: 'opacity 0.5s' }}>
-        <rect x="261" y="55" width="95" height="90" rx="12" fill={active(2) ? '#D1FAE5' : '#F3F4F6'} stroke="#059669" strokeWidth="2"/>
-        <text x="308" y="78" textAnchor="middle" fontSize="8" fill="#065F46" fontWeight="700">DataFrame</text>
-        {[['Edu','$890'],['HW','$548'],['SW','$180']].map(([cat, rev], i) => (
-          <g key={cat}>
-            <rect x="270" y={86 + i * 16} width="78" height="14" rx="3" fill="white" stroke="#A7F3D0" strokeWidth="1"/>
-            <text x="276" y={97 + i * 16} fontSize="7" fill="#374151">{cat}</text>
-            <text x="336" y={97 + i * 16} fontSize="7" fill="#059669" textAnchor="end">{rev}</text>
+    <svg viewBox="0 0 480 175" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#6B7280">ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)</text>
+      {/* Header */}
+      <rect x="20" y="24" width="440" height="22" rx="6" fill="#7C3AED"/>
+      {['Name','Dept','Salary','RANK'].map((h,i)=>
+        <text key={h} x={[75,175,295,420][i]} y="39" textAnchor="middle" fontSize="11" fill="white" fontWeight="700">{h}</text>
+      )}
+      {rows.map((r,i)=>{
+        const active = i===highlighted
+        const deptColor = r.dept==='Eng' ? '#EDE9FE' : '#D1FAE5'
+        const deptStroke = r.dept==='Eng' ? '#7C3AED' : '#10B981'
+        return (
+          <g key={r.name}>
+            <rect x="20" y={48+i*24} width="440" height="22" rx="5"
+              fill={active ? deptColor : '#F9FAFB'} stroke={active?deptStroke:'#E5E7EB'} strokeWidth={active?2:1}
+              style={{ transition:'all 0.3s' }}/>
+            {['name','dept','salary','rank'].map((k,j)=>{
+              const val = k==='rank' ? rank[i] : k==='salary' ? `$${(r.salary/1000).toFixed(0)}k` : r[k as 'name'|'dept']
+              return <text key={k} x={[75,175,295,420][j]} y={63+i*24} textAnchor="middle" fontSize="11"
+                fill={active?deptStroke:'#6B7280'} fontWeight={k==='rank'?700:400} style={{ transition:'all 0.3s' }}>{val}</text>
+            })}
+            {active && <rect x="390" y={50+i*24} width="64" height="18" rx="5" fill={deptStroke} opacity="0.2"/>}
           </g>
-        ))}
-        <text x="308" y="158" textAnchor="middle" fontSize="8" fill="#059669">Step 3</text>
-      </g>
+        )
+      })}
+    </svg>
+  )
+}
 
-      {/* Arrow 3 */}
-      <g opacity={active(3) ? 1 : 0.15} style={{ transition: 'opacity 0.5s' }}>
-        <line x1="356" y1="100" x2="381" y2="100" stroke="#D97706" strokeWidth="2.5"/>
-        <polygon points="378,94 389,100 378,106" fill="#D97706"/>
-        <text x="368" y="88" textAnchor="middle" fontSize="8" fill="#D97706">chart</text>
-      </g>
-
-      {/* Step 4 — Bar Chart */}
-      <g opacity={active(3) ? 1 : 0.2} style={{ transition: 'opacity 0.5s' }}>
-        <rect x="389" y="55" width="82" height="90" rx="12" fill={active(3) ? '#FEF3C7' : '#F3F4F6'} stroke="#D97706" strokeWidth="2"/>
-        {barData.map((b, i) => (
-          <g key={b.label}>
-            <rect x={397 + i * 24} y={130 - b.val * 0.6} width="18" height={b.val * 0.6} rx="3"
-              fill={active(3) ? b.color : '#D1D5DB'} style={{ transition: 'fill 0.5s' }}/>
-            <text x={406 + i * 24} y="148" textAnchor="middle" fontSize="7" fill="#6B7280">{b.label}</text>
+function SqlDataQualityVisual() {
+  const rows = [
+    { email:'alice@co.com',  dept:10,  updated:'2024-01-15', issues:[] },
+    { email:'bob@co.com',    dept:null, updated:'2024-01-20', issues:['NULL dept'] },
+    { email:'alice@co.com',  dept:10,  updated:'2024-01-15', issues:['Duplicate email'] },
+    { email:'',              dept:20,  updated:'2023-05-01', issues:['Empty email','Stale 90d+'] },
+    { email:'carol@co.com',  dept:30,  updated:'2024-02-01', issues:[] },
+  ]
+  const [scanRow, setScanRow] = useState(-1)
+  useEffect(() => {
+    let i = -1
+    const id = setInterval(() => { i=(i+1)%rows.length; setScanRow(i) }, 700)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      <text x="240" y="15" textAnchor="middle" fontSize="11" fill="#6B7280">Data Quality Scan — detecting issues</text>
+      {rows.map((r,i)=>{
+        const bad = r.issues.length > 0
+        const scanning = i===scanRow
+        const done = i<scanRow
+        return (
+          <g key={i}>
+            <rect x="20" y={22+i*30} width="340" height="24" rx="7"
+              fill={done&&bad?'#FEE2E2':done&&!bad?'#D1FAE5':scanning?'#FEF3C7':'#F9FAFB'}
+              stroke={done&&bad?'#EF4444':done&&!bad?'#10B981':scanning?'#D97706':'#E5E7EB'}
+              strokeWidth={scanning?2.5:1.5} style={{ transition:'all 0.3s' }}/>
+            <text x="200" y={38+i*30} textAnchor="middle" fontSize="10" fill="#374151">
+              {r.email || '(empty)'} | dept:{r.dept??'NULL'}
+            </text>
+            {done && <text x="380" y={38+i*30} textAnchor="middle" fontSize="14">{bad?'❌':'✅'}</text>}
+            {done && bad && <text x="430" y={38+i*30} fontSize="9" fill="#EF4444">{r.issues[0]}</text>}
+            {scanning && <text x="380" y={38+i*30} fontSize="13">🔍</text>}
           </g>
-        ))}
-        <text x="430" y="158" textAnchor="middle" fontSize="8" fill="#D97706">Step 4</text>
-      </g>
+        )
+      })}
+    </svg>
+  )
+}
 
-      {/* Bottom label */}
-      <text x="240" y="185" textAnchor="middle" fontSize="10" fill="#6B7280">
-        {['DB ready', 'SQL extracts data', 'pandas transforms', 'insights visualised'][step]}
-      </text>
-      <text x="240" y="198" textAnchor="middle" fontSize="9" fill="#9CA3AF">
-        The pattern used in every real data job
+function SqlViewVisual() {
+  const [phase, setPhase] = useState<'query'|'save'|'use'>('query')
+  useEffect(() => {
+    const phases: Array<'query'|'save'|'use'> = ['query','save','use']
+    let i=0
+    const id = setInterval(()=>{ i=(i+1)%phases.length; setPhase(phases[i]) }, 2000)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <svg viewBox="0 0 480 180" className="w-full max-w-lg mx-auto">
+      {/* Query box */}
+      <rect x="20" y="30" width="200" height="100" rx="10"
+        fill={phase==='query'?'#EDE9FE':'#F9FAFB'} stroke={phase==='query'?'#7C3AED':'#D1D5DB'}
+        strokeWidth={phase==='query'?2.5:1.5} style={{ transition:'all 0.4s' }}/>
+      <text x="120" y="55" textAnchor="middle" fontSize="10" fill="#6B7280" fontFamily="monospace">SELECT * FROM emp</text>
+      <text x="120" y="73" textAnchor="middle" fontSize="10" fill="#6B7280" fontFamily="monospace">WHERE status=&apos;active&apos;</text>
+      <text x="120" y="91" textAnchor="middle" fontSize="10" fill="#6B7280" fontFamily="monospace">JOIN departments...</text>
+      <text x="120" y="118" textAnchor="middle" fontSize="11" fill="#7C3AED" fontWeight="600">Complex Query</text>
+      {/* Arrow + save */}
+      {(phase==='save'||phase==='use') && (
+        <>
+          <line x1="220" y1="80" x2="260" y2="80" stroke="#10B981" strokeWidth="2.5" strokeDasharray="4"/>
+          <text x="240" y="75" textAnchor="middle" fontSize="9" fill="#10B981">CREATE VIEW</text>
+        </>
+      )}
+      {/* View box */}
+      <rect x="260" y="50" width="200" height="60" rx="10"
+        fill={phase==='save'||phase==='use'?'#D1FAE5':'#F3F4F6'}
+        stroke={phase==='save'||phase==='use'?'#10B981':'#D1D5DB'}
+        strokeWidth={phase==='use'?3:1.5} style={{ transition:'all 0.5s',
+        filter: phase==='use'?'drop-shadow(0 4px 10px #10B98155)':'none' }}/>
+      <text x="360" y="78" textAnchor="middle" fontSize="13" fill={phase==='use'?'#065F46':'#9CA3AF'}
+        fontWeight={phase==='use'?700:400} fontFamily="monospace">active_employees</text>
+      <text x="360" y="98" textAnchor="middle" fontSize="10" fill={phase==='use'?'#065F46':'#9CA3AF'}>Saved View</text>
+      {/* Use */}
+      {phase==='use' && (
+        <text x="360" y="148" textAnchor="middle" fontSize="11" fill="#10B981" fontWeight="600">
+          SELECT * FROM active_employees;
+        </text>
+      )}
+      <text x="240" y="170" textAnchor="middle" fontSize="11" fill="#6B7280">
+        {phase==='query'?'Complex query to simplify':phase==='save'?'Saved as a named view':'Use like a table — forever!'}
       </text>
     </svg>
   )
 }
 
-// ── slug → visual map ────────────────────────────────────────────────────────
+function SqlDebuggingVisual() {
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    const id = setInterval(()=>setStep(s=>(s+1)%4), 1800)
+    return () => clearInterval(id)
+  }, [])
+  const counts = [500, 500, 1200, 1200]
+  const labels = ['Before JOIN: 500 rows','Add LEFT JOIN...','After JOIN: 1200 rows — EXPLOSION!','Root cause: key not unique!']
+  const colors = ['#10B981','#D97706','#EF4444','#7C3AED']
+  const width = [80, 80, 192, 192]
+  return (
+    <svg viewBox="0 0 480 175" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#6B7280">Debugging: sanity-check row counts</text>
+      {/* Bar chart */}
+      <rect x="160" y="170" width="160" height="2" fill="#E5E7EB"/>
+      <rect x="80" y={130-width[step]} width="120" height={width[step]} rx="6"
+        fill={colors[step]+'44'} stroke={colors[step]} strokeWidth="2"
+        style={{ transition:'all 0.5s' }}/>
+      <text x="140" y={128-width[step]} textAnchor="middle" fontSize="13" fill={colors[step]} fontWeight="700">
+        {counts[step]}
+      </text>
+      <text x="140" y="160" textAnchor="middle" fontSize="10" fill="#6B7280">row count</text>
+      {/* Diff indicator */}
+      {step>=2 && (
+        <g>
+          <rect x="270" y="60" width="160" height="60" rx="10" fill="#FEE2E2" stroke="#EF4444" strokeWidth="2"/>
+          <text x="350" y="87" textAnchor="middle" fontSize="12" fill="#EF4444" fontWeight="700">+700 rows</text>
+          <text x="350" y="108" textAnchor="middle" fontSize="10" fill="#EF4444">Row explosion!</text>
+        </g>
+      )}
+      <text x="240" y="170" textAnchor="middle" fontSize="11" fill={colors[step]} fontWeight="600">{labels[step]}</text>
+    </svg>
+  )
+}
+
+function SqlPythonPGVisual() {
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    const id = setInterval(()=>setStep(s=>(s+1)%4), 1800)
+    return () => clearInterval(id)
+  }, [])
+  const stages = [
+    { label:'Python Script', icon:'🐍', color:'#7C3AED', x:30 },
+    { label:'psycopg2', icon:'🔌', color:'#3B82F6', x:150 },
+    { label:'PostgreSQL', icon:'🐘', color:'#10B981', x:270 },
+    { label:'Results / pandas', icon:'🐼', color:'#D97706', x:370 },
+  ]
+  return (
+    <svg viewBox="0 0 480 175" className="w-full max-w-lg mx-auto">
+      <text x="240" y="18" textAnchor="middle" fontSize="11" fill="#6B7280">Python ↔ PostgreSQL pipeline</text>
+      {stages.map((s,i)=>{
+        const active = i===step
+        return (
+          <g key={i}>
+            <rect x={s.x} y="30" width="90" height="90" rx="12"
+              fill={active?s.color+'22':'#F9FAFB'} stroke={active?s.color:'#E5E7EB'}
+              strokeWidth={active?3:1.5} style={{ transition:'all 0.4s',
+              filter: active?`drop-shadow(0 4px 12px ${s.color}44)`:'none' }}/>
+            <text x={s.x+45} y="70" textAnchor="middle" fontSize="22">{s.icon}</text>
+            <text x={s.x+45} y="100" textAnchor="middle" fontSize="9" fill={active?s.color:'#9CA3AF'} fontWeight={active?700:400}
+              style={{ transition:'all 0.4s' }}>{s.label}</text>
+            {i<stages.length-1 && (
+              <line x1={s.x+90} y1="75" x2={stages[i+1].x} y2="75"
+                stroke={i<step?'#10B981':'#E5E7EB'} strokeWidth="2.5"
+                strokeDasharray={i===step?'6':'none'} style={{ transition:'all 0.4s' }}/>
+            )}
+          </g>
+        )
+      })}
+      {/* Code snippet */}
+      <rect x="80" y="135" width="320" height="28" rx="8" fill="#1F2937"/>
+      <text x="240" y="153" textAnchor="middle" fontSize="10" fill="#10B981" fontFamily="monospace">
+        {['import psycopg2','cur.execute("SELECT...", (val,))','rows = cur.fetchall()','df = pd.read_sql(sql, conn)'][step]}
+      </text>
+    </svg>
+  )
+}
 
 const VISUAL_MAP: Record<string, () => JSX.Element> = {
   'what-is-a-variable': VariableVisual,
@@ -1079,11 +1137,18 @@ const VISUAL_MAP: Record<string, () => JSX.Element> = {
   'try-except-errors': TryExceptVisual,
   'what-is-an-api': APIVisual,
   'number-guessing-game': MiniProjectVisual,
-  'sql-basics':            SqlBasicsVisual,
-  'python-sqlite':         PythonSqliteVisual,
-  'sql-joins-aggregates':  SqlJoinsVisual,
-  'pandas-dataframes':     PandasVisual,
-  'data-analysis-project': DataPipelineVisual,
+  'sql-how-databases-think': SqlDBThinkVisual,
+  'sql-select-from':         SqlSelectVisual,
+  'sql-where-filtering':     SqlWhereVisual,
+  'sql-sorting-limiting':    SqlSortingVisual,
+  'sql-aggregates':          SqlAggregatesVisual,
+  'sql-joins-deep-dive':     SqlJoinsDeepVisual,
+  'sql-ctes-subqueries':     SqlCTEVisual,
+  'sql-window-functions':    SqlWindowVisual,
+  'sql-data-quality':        SqlDataQualityVisual,
+  'sql-views':               SqlViewVisual,
+  'sql-debugging':           SqlDebuggingVisual,
+  'sql-python-postgresql':   SqlPythonPGVisual,
 }
 
 // ── main export ──────────────────────────────────────────────────────────────

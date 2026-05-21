@@ -863,33 +863,32 @@
     "order_index": 2
   },
   {
-    "lesson_slug": "sql-basics",
+    "lesson_slug": "sql-how-databases-think",
     "type": "mcq",
-    "title": "Which SQL clause filters rows?",
-    "instructions": "You want to retrieve only products that cost more than $50. Which SQL clause do you use?",
+    "title": "What Is a Primary Key?",
+    "instructions": "A table has 1000 rows. Which statement about a PRIMARY KEY is correct?",
     "starter_code": null,
     "solution_code": null,
     "hints": [
-      "Think about what acts like a bouncer — only letting certain rows through.",
-      "It comes after FROM and before ORDER BY.",
-      "The answer starts with W."
+      "Think about uniqueness and NULLs.",
+      "A primary key must identify each row unambiguously."
     ],
-    "test_cases": null,
+    "test_cases": [],
     "options": [
       {
-        "label": "SELECT",
-        "is_correct": false
-      },
-      {
-        "label": "WHERE",
+        "text": "It uniquely identifies each row and cannot be NULL",
         "is_correct": true
       },
       {
-        "label": "HAVING",
+        "text": "It can have duplicate values as long as rows are different",
         "is_correct": false
       },
       {
-        "label": "LIMIT",
+        "text": "Every table can have multiple primary keys",
+        "is_correct": false
+      },
+      {
+        "text": "It automatically encrypts the row for security",
         "is_correct": false
       }
     ],
@@ -897,55 +896,74 @@
     "order_index": 1
   },
   {
-    "lesson_slug": "sql-basics",
+    "lesson_slug": "sql-how-databases-think",
     "type": "fill_blank",
-    "title": "Write a SELECT with WHERE and ORDER BY",
-    "instructions": "Complete the SQL query to select the `name` and `price` columns from the `products` table, filtering to rows where price is less than 100, sorted cheapest first.",
-    "starter_code": "SELECT name, price\nFROM products\n_____ price < 100\nORDER BY price _____;",
-    "solution_code": "SELECT name, price\nFROM products\nWHERE price < 100\nORDER BY price ASC;",
+    "title": "Foreign Key Syntax",
+    "instructions": "Fill in the blank to add a foreign key constraint referencing the `departments` table.",
+    "starter_code": "CREATE TABLE employees (\n  employee_id SERIAL PRIMARY KEY,\n  first_name  VARCHAR(100),\n  department_id INT _____ departments(department_id)\n);",
+    "solution_code": "CREATE TABLE employees (\n  employee_id SERIAL PRIMARY KEY,\n  first_name  VARCHAR(100),\n  department_id INT REFERENCES departments(department_id)\n);",
     "hints": [
-      "The filtering clause is WHERE.",
-      "ASC means ascending (smallest first) — it's the default but good to be explicit.",
-      "Fill in: WHERE and ASC"
+      "The keyword connects two tables via their keys.",
+      "REFERENCES tells Postgres which column in which table this FK points to."
     ],
-    "test_cases": null,
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "REFERENCES"
+      }
+    ],
     "options": null,
     "xp_reward": 15,
     "order_index": 2
   },
   {
-    "lesson_slug": "sql-basics",
-    "type": "debug",
-    "title": "Fix the Broken SQL Query",
-    "instructions": "This SQL query has two bugs. Fix it so it returns the top 5 most expensive electronics.",
-    "starter_code": "SELECT name price\nFROM products\nWHERE category = Electronics\nORDER BY price DESC\nLIMIT 5",
-    "solution_code": "SELECT name, price\nFROM products\nWHERE category = 'Electronics'\nORDER BY price DESC\nLIMIT 5",
+    "lesson_slug": "sql-how-databases-think",
+    "type": "mcq",
+    "title": "NULL Is Not Zero",
+    "instructions": "What does `SELECT NULL = NULL` return in PostgreSQL?",
+    "starter_code": null,
+    "solution_code": null,
     "hints": [
-      "Look at the SELECT line — something is missing between `name` and `price`.",
-      "Text values in SQL must be wrapped in single quotes.",
-      "Bug 1: missing comma after `name`. Bug 2: 'Electronics' needs quotes."
+      "NULL means unknown. Comparing two unknowns gives another unknown.",
+      "This is why you use IS NULL, not = NULL."
     ],
-    "test_cases": null,
-    "options": null,
-    "xp_reward": 15,
+    "test_cases": [],
+    "options": [
+      {
+        "text": "NULL (unknown)",
+        "is_correct": true
+      },
+      {
+        "text": "TRUE",
+        "is_correct": false
+      },
+      {
+        "text": "FALSE",
+        "is_correct": false
+      },
+      {
+        "text": "0",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
     "order_index": 3
   },
   {
-    "lesson_slug": "python-sqlite",
+    "lesson_slug": "sql-select-from",
     "type": "fill_blank",
-    "title": "Connect and Create a Table",
-    "instructions": "Fill in the blanks to connect to `library.db`, then create a `books` table with an auto-incrementing `id`, a `title` (TEXT, NOT NULL), and a `year` (INTEGER).",
-    "starter_code": "import sqlite3\n\nconn = sqlite3.connect(_____)\ncursor = conn.cursor()\n\ncursor.execute('''CREATE TABLE IF NOT EXISTS books (\n    id    INTEGER _____ AUTOINCREMENT,\n    title TEXT NOT NULL,\n    year  INTEGER\n)''')\n\nconn.commit()\nprint('Done')",
-    "solution_code": "import sqlite3\n\nconn = sqlite3.connect('library.db')\ncursor = conn.cursor()\n\ncursor.execute('''CREATE TABLE IF NOT EXISTS books (\n    id    INTEGER PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    year  INTEGER\n)''')\n\nconn.commit()\nprint('Done')",
+    "title": "Column Aliases",
+    "instructions": "Write a SELECT query that returns `salary / 12.0` aliased as `monthly_salary` from the `employees` table.",
+    "starter_code": "SELECT salary / 12.0 _____ monthly_salary\nFROM employees;",
+    "solution_code": "SELECT salary / 12.0 AS monthly_salary\nFROM employees;",
     "hints": [
-      "The database filename goes in connect() as a string: 'library.db'.",
-      "PRIMARY KEY makes the id column the unique identifier.",
-      "Fill in: 'library.db' and PRIMARY KEY"
+      "The keyword to rename a column in the result is AS.",
+      "AS monthly_salary goes right after the expression."
     ],
     "test_cases": [
       {
         "input": "",
-        "expected_output": "Done"
+        "expected_output": "AS"
       }
     ],
     "options": null,
@@ -953,21 +971,707 @@
     "order_index": 1
   },
   {
-    "lesson_slug": "python-sqlite",
-    "type": "debug",
-    "title": "Fix the Unsafe Insert",
-    "instructions": "This code inserts a book using an f-string — which is a SQL injection risk. Fix it to use the safe `?` placeholder pattern.",
-    "starter_code": "import sqlite3\n\ntitle = 'Python Crash Course'\nyear = 2023\n\nwith sqlite3.connect('library.db') as conn:\n    conn.execute(f\"INSERT INTO books (title, year) VALUES ('{title}', {year})\")\n\nprint('Inserted')",
-    "solution_code": "import sqlite3\n\ntitle = 'Python Crash Course'\nyear = 2023\n\nwith sqlite3.connect('library.db') as conn:\n    conn.execute(\n        'INSERT INTO books (title, year) VALUES (?, ?)',\n        (title, year)\n    )\n\nprint('Inserted')",
+    "lesson_slug": "sql-select-from",
+    "type": "mcq",
+    "title": "Why Avoid SELECT *?",
+    "instructions": "Which is NOT a reason to avoid `SELECT *` in production code?",
+    "starter_code": null,
+    "solution_code": null,
     "hints": [
-      "Never build SQL strings with f-strings — use ? placeholders instead.",
-      "Pass the values as a tuple as the second argument to execute().",
-      "Replace the f-string with: 'INSERT INTO books (title, year) VALUES (?, ?)' and pass (title, year) as the second arg."
+      "Think about what SELECT * does right and wrong.",
+      "One option is actually something SELECT * does just fine."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "It makes queries run faster by skipping column lookup",
+        "is_correct": true
+      },
+      {
+        "text": "Adding a new column can break downstream code",
+        "is_correct": false
+      },
+      {
+        "text": "You may transfer data you don't need over the network",
+        "is_correct": false
+      },
+      {
+        "text": "It makes queries harder to read and understand",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-select-from",
+    "type": "debug",
+    "title": "Fix the Computed Column",
+    "instructions": "This query should show each employee's full name and their annual bonus (10% of salary). Fix the bug.",
+    "starter_code": "SELECT first_name + ' ' + last_name AS full_name,\n       salary * 10 / 100 AS bonus\nFROM employees;",
+    "solution_code": "SELECT first_name || ' ' || last_name AS full_name,\n       salary * 0.10 AS bonus\nFROM employees;",
+    "hints": [
+      "PostgreSQL uses || for string concatenation, not +.",
+      "+ is for numeric addition. Strings need ||."
     ],
     "test_cases": [
       {
         "input": "",
-        "expected_output": "Inserted"
+        "expected_output": "full_name"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-where-filtering",
+    "type": "fill_blank",
+    "title": "IS NULL Check",
+    "instructions": "Fill in the blank to find employees who have no manager assigned (manager_id is NULL).",
+    "starter_code": "SELECT first_name, manager_id\nFROM employees\nWHERE manager_id _____ NULL;",
+    "solution_code": "SELECT first_name, manager_id\nFROM employees\nWHERE manager_id IS NULL;",
+    "hints": [
+      "Never use = NULL. NULL comparisons always use IS.",
+      "IS NULL is the correct syntax for checking missing values."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "IS"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-where-filtering",
+    "type": "mcq",
+    "title": "LIKE Pattern Matching",
+    "instructions": "Which WHERE clause finds all emails that end with `@company.com`?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "% matches zero or more characters.",
+      "The pattern should end with the literal string @company.com."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "WHERE email LIKE '%@company.com'",
+        "is_correct": true
+      },
+      {
+        "text": "WHERE email LIKE '@company.com%'",
+        "is_correct": false
+      },
+      {
+        "text": "WHERE email = '%@company.com'",
+        "is_correct": false
+      },
+      {
+        "text": "WHERE email CONTAINS '@company.com'",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-where-filtering",
+    "type": "debug",
+    "title": "Fix the NOT IN with NULLs",
+    "instructions": "This query should return employees NOT in the Engineering or Sales departments. But it returns 0 rows. Fix it.",
+    "starter_code": "SELECT first_name, department\nFROM employees\nWHERE department NOT IN ('Engineering', 'Sales', NULL);",
+    "solution_code": "SELECT first_name, department\nFROM employees\nWHERE department NOT IN ('Engineering', 'Sales')\n  AND department IS NOT NULL;",
+    "hints": [
+      "NULL in a NOT IN list makes the entire condition unknown (NULL).",
+      "Remove NULL from the list and add a separate IS NOT NULL check."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "IS NOT NULL"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-sorting-limiting",
+    "type": "fill_blank",
+    "title": "Top 5 Highest Salaries",
+    "instructions": "Complete the query to return the top 5 highest-paid employees.",
+    "starter_code": "SELECT first_name, salary\nFROM employees\nORDER BY salary _____\n_____ 5;",
+    "solution_code": "SELECT first_name, salary\nFROM employees\nORDER BY salary DESC\nLIMIT 5;",
+    "hints": [
+      "DESC means highest first.",
+      "LIMIT restricts the number of rows returned."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "DESC"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-sorting-limiting",
+    "type": "mcq",
+    "title": "LIMIT Without ORDER BY",
+    "instructions": "You run `SELECT * FROM orders LIMIT 10` without ORDER BY. What is guaranteed about the result?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "Without ORDER BY, the database returns rows in an implementation-defined order.",
+      "This order can change between runs."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "Nothing — the 10 rows returned are undefined and may differ between runs",
+        "is_correct": true
+      },
+      {
+        "text": "The first 10 rows that were inserted into the table",
+        "is_correct": false
+      },
+      {
+        "text": "The 10 rows with the lowest primary key values",
+        "is_correct": false
+      },
+      {
+        "text": "Rows are returned in alphabetical order by default",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-sorting-limiting",
+    "type": "fill_blank",
+    "title": "Pagination with OFFSET",
+    "instructions": "Write the OFFSET value to get page 3 of results, with 10 rows per page.",
+    "starter_code": "SELECT * FROM products\nORDER BY product_id\nLIMIT 10 OFFSET _____;",
+    "solution_code": "SELECT * FROM products\nORDER BY product_id\nLIMIT 10 OFFSET 20;",
+    "hints": [
+      "Page 1 = OFFSET 0, Page 2 = OFFSET 10, Page 3 = OFFSET 20.",
+      "Formula: OFFSET = (page_number - 1) * page_size"
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "20"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-aggregates",
+    "type": "mcq",
+    "title": "COUNT(*) vs COUNT(column)",
+    "instructions": "A table has 100 rows. 10 rows have `manager_id = NULL`. What does `COUNT(manager_id)` return?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "COUNT(column) counts non-NULL values only.",
+      "COUNT(*) would return 100."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "90",
+        "is_correct": true
+      },
+      {
+        "text": "100",
+        "is_correct": false
+      },
+      {
+        "text": "10",
+        "is_correct": false
+      },
+      {
+        "text": "NULL",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-aggregates",
+    "type": "fill_blank",
+    "title": "GROUP BY with HAVING",
+    "instructions": "Complete the query to find departments with more than 3 employees, showing count per department.",
+    "starter_code": "SELECT department, COUNT(*) AS headcount\nFROM employees\nGROUP BY department\n_____ COUNT(*) > 3\nORDER BY headcount DESC;",
+    "solution_code": "SELECT department, COUNT(*) AS headcount\nFROM employees\nGROUP BY department\nHAVING COUNT(*) > 3\nORDER BY headcount DESC;",
+    "hints": [
+      "HAVING filters groups, not rows.",
+      "WHERE runs before grouping; HAVING runs after aggregation."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "HAVING"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-aggregates",
+    "type": "debug",
+    "title": "GROUP BY Error",
+    "instructions": "This query throws an error. Fix it so it shows average salary per department and job title.",
+    "starter_code": "SELECT department, job_title, first_name, AVG(salary) AS avg_salary\nFROM employees\nGROUP BY department;",
+    "solution_code": "SELECT department, job_title, AVG(salary) AS avg_salary\nFROM employees\nGROUP BY department, job_title;",
+    "hints": [
+      "Every non-aggregate column in SELECT must appear in GROUP BY.",
+      "first_name can't be included without being in GROUP BY or an aggregate."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "GROUP BY department, job_title"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-joins-deep-dive",
+    "type": "mcq",
+    "title": "LEFT JOIN Result",
+    "instructions": "Table A has 5 rows. Table B has 3 matching rows for A's key. You LEFT JOIN B onto A. How many rows does the result have?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "LEFT JOIN keeps ALL rows from the left table.",
+      "Unmatched rows get NULL on the right side."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "5 (all of A, with NULLs for the 2 unmatched)",
+        "is_correct": true
+      },
+      {
+        "text": "3 (only matched rows)",
+        "is_correct": false
+      },
+      {
+        "text": "8 (all rows from both tables)",
+        "is_correct": false
+      },
+      {
+        "text": "2 (only unmatched rows)",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-joins-deep-dive",
+    "type": "fill_blank",
+    "title": "Anti-JOIN Pattern",
+    "instructions": "Complete the query to find employees who have NO matching department in the departments table.",
+    "starter_code": "SELECT e.first_name, e.department_id\nFROM employees e\nLEFT JOIN departments d ON e.department_id = d.department_id\nWHERE d.department_id _____ NULL;",
+    "solution_code": "SELECT e.first_name, e.department_id\nFROM employees e\nLEFT JOIN departments d ON e.department_id = d.department_id\nWHERE d.department_id IS NULL;",
+    "hints": [
+      "After a LEFT JOIN, rows with no match have NULL on the right side.",
+      "Check for IS NULL on the right table's primary key."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "IS NULL"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-joins-deep-dive",
+    "type": "debug",
+    "title": "Row Explosion Check",
+    "instructions": "A developer says: 'My SUM(salary) after joining to projects is 3x the actual payroll!' Write a query to check if employee_id is unique in the projects table (the likely cause).",
+    "starter_code": "-- Check if employee_id appears more than once in projects table\nSELECT _____, COUNT(*) AS cnt\nFROM projects\nGROUP BY _____\nHAVING _____ > 1;",
+    "solution_code": "-- Check if employee_id appears more than once in projects table\nSELECT employee_id, COUNT(*) AS cnt\nFROM projects\nGROUP BY employee_id\nHAVING COUNT(*) > 1;",
+    "hints": [
+      "GROUP BY the join key to count occurrences.",
+      "HAVING COUNT(*) > 1 shows only the duplicates."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "HAVING COUNT(*) > 1"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-ctes-subqueries",
+    "type": "fill_blank",
+    "title": "CTE Syntax",
+    "instructions": "Fill in the blank to start a CTE named `high_earners` that selects employees with salary > 80000.",
+    "starter_code": "_____ high_earners AS (\n  SELECT * FROM employees WHERE salary > 80000\n)\nSELECT * FROM high_earners;",
+    "solution_code": "WITH high_earners AS (\n  SELECT * FROM employees WHERE salary > 80000\n)\nSELECT * FROM high_earners;",
+    "hints": [
+      "CTEs start with the WITH keyword.",
+      "WITH name AS ( ... ) is the full syntax."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "WITH"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-ctes-subqueries",
+    "type": "mcq",
+    "title": "CTE vs Subquery: Readability",
+    "instructions": "You need to reference the same derived table in 3 different parts of a query. Which is the better approach?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "CTEs are named and reusable within the same query.",
+      "Subqueries would have to be repeated each time."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "CTE — define it once with WITH, reference it by name 3 times",
+        "is_correct": true
+      },
+      {
+        "text": "Subquery — copy-paste the same subquery in all 3 places",
+        "is_correct": false
+      },
+      {
+        "text": "Temporary table — always fastest for repeated access",
+        "is_correct": false
+      },
+      {
+        "text": "View — create a new view for every query",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-ctes-subqueries",
+    "type": "debug",
+    "title": "Fix the Correlated Subquery",
+    "instructions": "This query should find employees who earn more than the average salary in their own department. Fix the bug.",
+    "starter_code": "SELECT first_name, department_id, salary\nFROM employees e1\nWHERE salary > (\n  SELECT AVG(salary)\n  FROM employees e2\n  WHERE e2.department_id = e1.department_id  -- should reference outer alias\n);",
+    "solution_code": "SELECT first_name, department_id, salary\nFROM employees e1\nWHERE salary > (\n  SELECT AVG(salary)\n  FROM employees e2\n  WHERE e2.department_id = e1.department_id\n);",
+    "hints": [
+      "This query is actually correct — run it and verify the output.",
+      "The alias e1 in the outer query is correctly referenced in the inner query."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "e1.department_id"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-window-functions",
+    "type": "fill_blank",
+    "title": "ROW_NUMBER per Department",
+    "instructions": "Fill in the blank to assign a row number to each employee within their department, ordered by salary descending.",
+    "starter_code": "SELECT first_name, department, salary,\n       ROW_NUMBER() OVER (\n         _____ BY department\n         ORDER BY salary DESC\n       ) AS rank_in_dept\nFROM employees;",
+    "solution_code": "SELECT first_name, department, salary,\n       ROW_NUMBER() OVER (\n         PARTITION BY department\n         ORDER BY salary DESC\n       ) AS rank_in_dept\nFROM employees;",
+    "hints": [
+      "PARTITION BY divides the window into groups — like GROUP BY but keeps all rows.",
+      "PARTITION BY department means: restart numbering for each department."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "PARTITION"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-window-functions",
+    "type": "mcq",
+    "title": "RANK vs DENSE_RANK",
+    "instructions": "Salaries are: 90000, 85000, 85000, 70000. What does DENSE_RANK() return for the 70000 salary?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "DENSE_RANK doesn't skip numbers after a tie.",
+      "Two people tied at 2nd place means the next rank is 3, not 4."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "3",
+        "is_correct": true
+      },
+      {
+        "text": "4",
+        "is_correct": false
+      },
+      {
+        "text": "2",
+        "is_correct": false
+      },
+      {
+        "text": "1",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-window-functions",
+    "type": "fill_blank",
+    "title": "LAG for Month-over-Month",
+    "instructions": "Fill in the blank to get the previous month's revenue for comparison.",
+    "starter_code": "SELECT month, revenue,\n       _____(revenue, 1) OVER (ORDER BY month) AS prev_month_revenue\nFROM monthly_sales;",
+    "solution_code": "SELECT month, revenue,\n       LAG(revenue, 1) OVER (ORDER BY month) AS prev_month_revenue\nFROM monthly_sales;",
+    "hints": [
+      "LAG looks backwards (previous rows). LEAD looks forward (next rows).",
+      "LAG(column, n) gets the value n rows before the current row."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "LAG"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-data-quality",
+    "type": "fill_blank",
+    "title": "Find Duplicate Emails",
+    "instructions": "Complete the query to find email addresses that appear more than once in the users table.",
+    "starter_code": "SELECT email, COUNT(*) AS occurrences\nFROM users\nGROUP BY email\nHAVING _____ > 1\nORDER BY occurrences DESC;",
+    "solution_code": "SELECT email, COUNT(*) AS occurrences\nFROM users\nGROUP BY email\nHAVING COUNT(*) > 1\nORDER BY occurrences DESC;",
+    "hints": [
+      "HAVING filters on the aggregate result.",
+      "COUNT(*) > 1 means 'more than one row has this email'."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "COUNT(*) > 1"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-data-quality",
+    "type": "mcq",
+    "title": "Orphaned Records Pattern",
+    "instructions": "You want to find all orders that reference a customer_id that doesn't exist in the customers table. Which query is correct?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "Use LEFT JOIN to keep all orders, then filter for unmatched.",
+      "IS NULL on the right table's PK identifies rows with no match."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "SELECT o.* FROM orders o LEFT JOIN customers c ON o.customer_id = c.customer_id WHERE c.customer_id IS NULL",
+        "is_correct": true
+      },
+      {
+        "text": "SELECT o.* FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id WHERE c.customer_id IS NULL",
+        "is_correct": false
+      },
+      {
+        "text": "SELECT o.* FROM orders o WHERE o.customer_id NOT IN (SELECT * FROM customers)",
+        "is_correct": false
+      },
+      {
+        "text": "SELECT o.* FROM orders o WHERE customer_id IS NULL",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-data-quality",
+    "type": "debug",
+    "title": "Fix the Stale Data Query",
+    "instructions": "This query should find records not updated in the last 90 days. Fix the bug.",
+    "starter_code": "SELECT id, name, last_updated_at\nFROM products\nWHERE last_updated_at = NOW() - 90;",
+    "solution_code": "SELECT id, name, last_updated_at\nFROM products\nWHERE last_updated_at < NOW() - INTERVAL '90 days';",
+    "hints": [
+      "You can't subtract a plain number from a timestamp. Use INTERVAL.",
+      "< means 'before' — records updated MORE than 90 days ago."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "INTERVAL '90 days'"
+      }
+    ],
+    "options": null,
+    "xp_reward": 20,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-views",
+    "type": "fill_blank",
+    "title": "Create a View",
+    "instructions": "Fill in the blank to create a view called `active_employees` that selects all columns from employees where status = 'active'.",
+    "starter_code": "CREATE _____ active_employees AS\nSELECT *\nFROM employees\nWHERE status = 'active';",
+    "solution_code": "CREATE VIEW active_employees AS\nSELECT *\nFROM employees\nWHERE status = 'active';",
+    "hints": [
+      "The keyword after CREATE is VIEW.",
+      "CREATE VIEW name AS (the query) is the full syntax."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "VIEW"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-views",
+    "type": "mcq",
+    "title": "View vs Materialized View",
+    "instructions": "A dashboard query runs a complex 10-table join that takes 30 seconds. Which solution gives the fastest read performance?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "A regular VIEW re-runs the query every time.",
+      "A materialized view stores the result until refreshed."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "Materialized VIEW — stores the result, refreshed on schedule",
+        "is_correct": true
+      },
+      {
+        "text": "Regular VIEW — automatically faster than writing the query directly",
+        "is_correct": false
+      },
+      {
+        "text": "CTE — runs faster than a VIEW",
+        "is_correct": false
+      },
+      {
+        "text": "Subquery — inline queries are always optimised by the DB",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 2
+  },
+  {
+    "lesson_slug": "sql-views",
+    "type": "fill_blank",
+    "title": "Replace an Existing View",
+    "instructions": "Fill in the blank to update an existing view without dropping it first.",
+    "starter_code": "CREATE _____ VIEW active_employees AS\nSELECT employee_id, first_name, department\nFROM employees\nWHERE status = 'active';",
+    "solution_code": "CREATE OR REPLACE VIEW active_employees AS\nSELECT employee_id, first_name, department\nFROM employees\nWHERE status = 'active';",
+    "hints": [
+      "OR REPLACE lets you redefine a view without dropping it.",
+      "CREATE OR REPLACE VIEW is the full syntax."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "OR REPLACE"
+      }
+    ],
+    "options": null,
+    "xp_reward": 15,
+    "order_index": 3
+  },
+  {
+    "lesson_slug": "sql-debugging",
+    "type": "mcq",
+    "title": "Identifying Row Explosion",
+    "instructions": "Before a JOIN you have 500 rows. After a LEFT JOIN to a lookup table, you have 1200 rows. What is the most likely cause?",
+    "starter_code": null,
+    "solution_code": null,
+    "hints": [
+      "LEFT JOIN keeps all rows from the left table. Why would you get MORE rows?",
+      "Think about uniqueness of the join key on the right side."
+    ],
+    "test_cases": [],
+    "options": [
+      {
+        "text": "The join key is not unique in the lookup table — some rows match multiple times",
+        "is_correct": true
+      },
+      {
+        "text": "The WHERE clause is missing",
+        "is_correct": false
+      },
+      {
+        "text": "NULL values in the join key are being included",
+        "is_correct": false
+      },
+      {
+        "text": "The ORDER BY clause is affecting row count",
+        "is_correct": false
+      }
+    ],
+    "xp_reward": 10,
+    "order_index": 1
+  },
+  {
+    "lesson_slug": "sql-debugging",
+    "type": "debug",
+    "title": "Fix the NULL NOT IN Bug",
+    "instructions": "This query should return employees not managed by employee IDs 1, 2, or 3. But it returns 0 rows. Fix it.",
+    "starter_code": "SELECT first_name FROM employees\nWHERE manager_id NOT IN (1, 2, 3);",
+    "solution_code": "SELECT first_name FROM employees\nWHERE (manager_id NOT IN (1, 2, 3)\n  AND manager_id IS NOT NULL)\n   OR manager_id IS NULL;",
+    "hints": [
+      "If manager_id is NULL for some rows, NOT IN evaluates to NULL for those rows.",
+      "Add an explicit OR manager_id IS NULL to include employees with no manager."
+    ],
+    "test_cases": [
+      {
+        "input": "",
+        "expected_output": "IS NOT NULL"
       }
     ],
     "options": null,
@@ -975,55 +1679,53 @@
     "order_index": 2
   },
   {
-    "lesson_slug": "python-sqlite",
-    "type": "mini_project",
-    "title": "Build a Book Library CLI",
-    "instructions": "Create a small in-memory SQLite database that stores books. Your script should:\n1. Create a `books` table (id, title, author, year)\n2. Insert at least 3 books using executemany\n3. Query and print all books sorted by year\n4. Print the total count of books\n\nUse ':memory:' as the database name so no file is created.",
-    "starter_code": "import sqlite3\n\nwith sqlite3.connect(':memory:') as conn:\n    # 1. Create table\n    conn.execute('''CREATE TABLE books (\n        id     INTEGER PRIMARY KEY AUTOINCREMENT,\n        title  TEXT,\n        author TEXT,\n        year   INTEGER\n    )''')\n\n    # 2. Insert books\n    books = [\n        # Add at least 3 tuples: (title, author, year)\n    ]\n    conn.executemany('INSERT INTO books (title, author, year) VALUES (?,?,?)', books)\n\n    # 3. Print all books sorted by year\n    conn.row_factory = sqlite3.Row\n    rows = conn.execute('SELECT title, author, year FROM books ORDER BY year').fetchall()\n    for r in rows:\n        print(f\"{r['year']} | {r['title']} by {r['author']}\")\n\n    # 4. Print count\n    count = conn.execute('SELECT COUNT(*) FROM books').fetchone()[0]\n    print(f'Total: {count} books')",
-    "solution_code": "import sqlite3\n\nwith sqlite3.connect(':memory:') as conn:\n    conn.execute('''CREATE TABLE books (\n        id     INTEGER PRIMARY KEY AUTOINCREMENT,\n        title  TEXT,\n        author TEXT,\n        year   INTEGER\n    )''')\n\n    books = [\n        ('Python Crash Course', 'Eric Matthes', 2019),\n        ('Fluent Python', 'Luciano Ramalho', 2022),\n        ('Clean Code', 'Robert Martin', 2008),\n    ]\n    conn.executemany('INSERT INTO books (title, author, year) VALUES (?,?,?)', books)\n\n    conn.row_factory = sqlite3.Row\n    rows = conn.execute('SELECT title, author, year FROM books ORDER BY year').fetchall()\n    for r in rows:\n        print(f\"{r['year']} | {r['title']} by {r['author']}\")\n\n    count = conn.execute('SELECT COUNT(*) FROM books').fetchone()[0]\n    print(f'Total: {count} books')",
+    "lesson_slug": "sql-debugging",
+    "type": "fill_blank",
+    "title": "Sanity Check Row Count",
+    "instructions": "Fill in the blank to count rows before and after a JOIN to detect row explosion.",
+    "starter_code": "-- Before JOIN\nSELECT _____ FROM employees;\n-- After JOIN\nSELECT _____ FROM employees e\nJOIN projects p ON e.employee_id = p.employee_id;",
+    "solution_code": "-- Before JOIN\nSELECT COUNT(*) FROM employees;\n-- After JOIN\nSELECT COUNT(*) FROM employees e\nJOIN projects p ON e.employee_id = p.employee_id;",
     "hints": [
-      "Add tuples like ('Book Title', 'Author Name', 2023) to the books list.",
-      "executemany() inserts all rows in one call — much faster than a loop of execute().",
-      "Use conn.row_factory = sqlite3.Row after the insert so you can access columns by name."
+      "COUNT(*) counts all rows in the result.",
+      "If the second count is much larger, you have a row explosion."
     ],
     "test_cases": [
       {
         "input": "",
-        "expected_output": "Total: 3 books"
+        "expected_output": "COUNT(*)"
       }
     ],
     "options": null,
-    "xp_reward": 25,
+    "xp_reward": 15,
     "order_index": 3
   },
   {
-    "lesson_slug": "sql-joins-aggregates",
+    "lesson_slug": "sql-python-postgresql",
     "type": "mcq",
-    "title": "WHERE vs HAVING",
-    "instructions": "You've grouped orders by customer and want to show only customers who placed more than 3 orders. Which clause do you use to filter?",
+    "title": "SQL Injection Prevention",
+    "instructions": "Which Python code is SAFE from SQL injection?",
     "starter_code": null,
     "solution_code": null,
     "hints": [
-      "WHERE filters individual rows before grouping. HAVING filters groups after aggregation.",
-      "COUNT(*) is an aggregate — it only exists after GROUP BY runs.",
-      "You can't use WHERE on an aggregate result."
+      "Never build SQL strings with f-strings or string concatenation.",
+      "Parameterised queries use placeholders (%s) and pass values separately."
     ],
-    "test_cases": null,
+    "test_cases": [],
     "options": [
       {
-        "label": "WHERE COUNT(*) > 3",
-        "is_correct": false
-      },
-      {
-        "label": "HAVING COUNT(*) > 3",
+        "text": "cur.execute('SELECT * FROM users WHERE email = %s', (email,))",
         "is_correct": true
       },
       {
-        "label": "LIMIT COUNT(*) > 3",
+        "text": "cur.execute(f'SELECT * FROM users WHERE email = \"{email}\"')",
         "is_correct": false
       },
       {
-        "label": "ORDER BY COUNT(*) > 3",
+        "text": "cur.execute('SELECT * FROM users WHERE email = ' + email)",
+        "is_correct": false
+      },
+      {
+        "text": "cur.execute('SELECT * FROM users WHERE email = \"{}\"'.format(email))",
         "is_correct": false
       }
     ],
@@ -1031,173 +1733,46 @@
     "order_index": 1
   },
   {
-    "lesson_slug": "sql-joins-aggregates",
+    "lesson_slug": "sql-python-postgresql",
     "type": "fill_blank",
-    "title": "Complete the JOIN Query",
-    "instructions": "Fill in the blanks to complete a query that shows each employee's name and their department name, joining the `employees` table to the `departments` table.",
-    "starter_code": "SELECT e.name, d.dept_name\nFROM employees e\n_____ JOIN departments d\n  ON e.dept_id = d._____\nORDER BY e.name;",
-    "solution_code": "SELECT e.name, d.dept_name\nFROM employees e\nINNER JOIN departments d\n  ON e.dept_id = d.id\nORDER BY e.name;",
+    "title": "Fetch Query Results",
+    "instructions": "Fill in the blank to execute a query and fetch ALL rows as a list.",
+    "starter_code": "import psycopg2\nconn = psycopg2.connect(dsn='postgresql://adhd:adhd_secret@localhost/adhd_dashboard')\ncur = conn.cursor()\ncur.execute('SELECT first_name, salary FROM employees')\nrows = cur._____()\nfor row in rows:\n    print(row)",
+    "solution_code": "import psycopg2\nconn = psycopg2.connect(dsn='postgresql://adhd:adhd_secret@localhost/adhd_dashboard')\ncur = conn.cursor()\ncur.execute('SELECT first_name, salary FROM employees')\nrows = cur.fetchall()\nfor row in rows:\n    print(row)",
     "hints": [
-      "The most common join type that returns only matching rows from both tables.",
-      "The ON clause links the foreign key in employees to the primary key in departments.",
-      "Fill in: INNER and id"
+      "fetchall() returns all rows at once as a list of tuples.",
+      "fetchone() returns just the next single row."
     ],
-    "test_cases": null,
-    "options": null,
-    "xp_reward": 15,
-    "order_index": 2
-  },
-  {
-    "lesson_slug": "sql-joins-aggregates",
-    "type": "debug",
-    "title": "Fix the GROUP BY Query",
-    "instructions": "This query tries to show total sales per product category, filtered to categories with more than $1000 in sales. Fix the two bugs.",
-    "starter_code": "SELECT p.category, SUM(s.quantity * p.price) AS total\nFROM sales s\nJOIN products p ON s.product_id = p.id\nWHERE total > 1000\nGROUP BY p.category\nORDER BY total DESC;",
-    "solution_code": "SELECT p.category, SUM(s.quantity * p.price) AS total\nFROM sales s\nJOIN products p ON s.product_id = p.id\nGROUP BY p.category\nHAVING total > 1000\nORDER BY total DESC;",
-    "hints": [
-      "You can't use WHERE to filter on an aggregate alias — use HAVING instead.",
-      "WHERE must come before GROUP BY; HAVING comes after.",
-      "Fix: move the filter to HAVING and place it after GROUP BY."
-    ],
-    "test_cases": null,
-    "options": null,
-    "xp_reward": 20,
-    "order_index": 3
-  },
-  {
-    "lesson_slug": "pandas-dataframes",
-    "type": "mcq",
-    "title": "Filter a DataFrame",
-    "instructions": "You have a DataFrame `df` with a `salary` column. Which line correctly selects only rows where salary is above 80000?",
-    "starter_code": null,
-    "solution_code": null,
-    "hints": [
-      "Pandas filtering uses a boolean mask inside square brackets.",
-      "The condition goes inside df[ ].",
-      "You need double brackets — one for df, one for the condition."
-    ],
-    "test_cases": null,
-    "options": [
+    "test_cases": [
       {
-        "label": "df.where('salary > 80000')",
-        "is_correct": false
-      },
-      {
-        "label": "df[df['salary'] > 80000]",
-        "is_correct": true
-      },
-      {
-        "label": "df.filter(salary > 80000)",
-        "is_correct": false
-      },
-      {
-        "label": "df.SELECT(salary > 80000)",
-        "is_correct": false
+        "input": "",
+        "expected_output": "fetchall"
       }
     ],
-    "xp_reward": 10,
-    "order_index": 1
-  },
-  {
-    "lesson_slug": "pandas-dataframes",
-    "type": "fill_blank",
-    "title": "Group and Aggregate",
-    "instructions": "Fill in the blanks to compute the average salary per department and sort the result from highest to lowest average.",
-    "starter_code": "import pandas as pd\n\ndata = {\n    'name':   ['Alice', 'Bob', 'Carol', 'Dave', 'Eve'],\n    'dept':   ['Eng', 'Sales', 'Eng', 'HR', 'Eng'],\n    'salary': [90000, 65000, 95000, 72000, 88000],\n}\ndf = pd.DataFrame(data)\n\nresult = df.groupby(_____)[_____].mean().sort_values(ascending=_____)\nprint(result)",
-    "solution_code": "import pandas as pd\n\ndata = {\n    'name':   ['Alice', 'Bob', 'Carol', 'Dave', 'Eve'],\n    'dept':   ['Eng', 'Sales', 'Eng', 'HR', 'Eng'],\n    'salary': [90000, 65000, 95000, 72000, 88000],\n}\ndf = pd.DataFrame(data)\n\nresult = df.groupby('dept')['salary'].mean().sort_values(ascending=False)\nprint(result)",
-    "hints": [
-      "groupby() takes the column name to group on as a string.",
-      "After groupby, select the column to aggregate with ['salary'].",
-      "ascending=False sorts highest first. Fill in: 'dept', 'salary', False"
-    ],
-    "test_cases": null,
     "options": null,
     "xp_reward": 15,
     "order_index": 2
   },
   {
-    "lesson_slug": "pandas-dataframes",
+    "lesson_slug": "sql-python-postgresql",
     "type": "mini_project",
-    "title": "Student Grade Analyser",
-    "instructions": "Given the student data below, use pandas to:\n1. Add a `grade` column: 'A' if score >= 90, 'B' if >= 75, else 'C'\n2. Print the count of students per grade using value_counts()\n3. Print the average score per subject using groupby\n4. Print the name and score of the top student overall",
-    "starter_code": "import pandas as pd\n\ndata = {\n    'name':    ['Alice','Bob','Carol','Dave','Eve','Frank'],\n    'subject': ['Math','Math','Science','Science','Math','Science'],\n    'score':   [92, 78, 88, 65, 95, 71],\n}\ndf = pd.DataFrame(data)\n\n# 1. Add grade column\ndef assign_grade(score):\n    pass  # fill this in\n\ndf['grade'] = df['score'].apply(assign_grade)\n\n# 2. Grade counts\nprint('Grade distribution:')\n# your code here\n\n# 3. Average per subject\nprint('\\nAverage score by subject:')\n# your code here\n\n# 4. Top student\nprint('\\nTop student:')\n# your code here",
-    "solution_code": "import pandas as pd\n\ndata = {\n    'name':    ['Alice','Bob','Carol','Dave','Eve','Frank'],\n    'subject': ['Math','Math','Science','Science','Math','Science'],\n    'score':   [92, 78, 88, 65, 95, 71],\n}\ndf = pd.DataFrame(data)\n\ndef assign_grade(score):\n    if score >= 90: return 'A'\n    elif score >= 75: return 'B'\n    else: return 'C'\n\ndf['grade'] = df['score'].apply(assign_grade)\n\nprint('Grade distribution:')\nprint(df['grade'].value_counts())\n\nprint('\\nAverage score by subject:')\nprint(df.groupby('subject')['score'].mean())\n\nprint('\\nTop student:')\ntop = df.loc[df['score'].idxmax()]\nprint(f\"{top['name']}: {top['score']}\")",
+    "title": "Write a Data Quality Checker",
+    "instructions": "Write a Python function `check_nulls(table_name, columns)` that connects to a PostgreSQL database and returns a dictionary mapping each column name to the count of NULL values in it. Use parameterised queries where possible and psycopg2.",
+    "starter_code": "import psycopg2\n\ndef check_nulls(table_name, columns):\n    \"\"\"Returns {column_name: null_count} for each column.\"\"\"\n    conn = psycopg2.connect(dsn='postgresql://adhd:adhd_secret@localhost/adhd_dashboard')\n    cur = conn.cursor()\n    result = {}\n    \n    for col in columns:\n        # Build and execute a query for each column\n        # Use table_name and col safely\n        pass\n    \n    cur.close()\n    conn.close()\n    return result\n\n# Test it\nprint(check_nulls('employees', ['email', 'manager_id', 'department_id']))",
+    "solution_code": "import psycopg2\n\ndef check_nulls(table_name, columns):\n    \"\"\"Returns {column_name: null_count} for each column.\"\"\"\n    conn = psycopg2.connect(dsn='postgresql://adhd:adhd_secret@localhost/adhd_dashboard')\n    cur = conn.cursor()\n    result = {}\n    \n    for col in columns:\n        # table and column names can't be parameterised with %s\n        # but they come from our own code, not user input — safe to interpolate\n        query = f'SELECT COUNT(*) FROM {table_name} WHERE {col} IS NULL'\n        cur.execute(query)\n        result[col] = cur.fetchone()[0]\n    \n    cur.close()\n    conn.close()\n    return result\n\nprint(check_nulls('employees', ['email', 'manager_id', 'department_id']))",
     "hints": [
-      "Use apply() with a function that returns 'A', 'B', or 'C' based on the score.",
-      "df['grade'].value_counts() counts how many students got each grade.",
-      "df.loc[df['score'].idxmax()] finds the row with the highest score."
+      "Loop through each column name and build a query using IS NULL.",
+      "Table and column names can't use %s placeholders — use f-strings, but only when the values come from your own code, not user input.",
+      "cur.fetchone()[0] gets the single COUNT(*) value from the result."
     ],
-    "test_cases": null,
-    "options": null,
-    "xp_reward": 25,
-    "order_index": 3
-  },
-  {
-    "lesson_slug": "data-analysis-project",
-    "type": "mcq",
-    "title": "pd.read_sql vs cursor.fetchall",
-    "instructions": "You have a SQL query result you want to work with in pandas. Which approach is the cleanest?",
-    "starter_code": null,
-    "solution_code": null,
-    "hints": [
-      "pandas has a built-in function for reading SQL directly into a DataFrame.",
-      "fetchall() returns a list of tuples — you'd have to convert manually.",
-      "pd.read_sql() handles column names and types automatically."
-    ],
-    "test_cases": null,
-    "options": [
+    "test_cases": [
       {
-        "label": "cursor.fetchall() then pd.DataFrame(rows)",
-        "is_correct": false
-      },
-      {
-        "label": "pd.read_sql(query, conn)",
-        "is_correct": true
-      },
-      {
-        "label": "conn.execute(query).to_dataframe()",
-        "is_correct": false
-      },
-      {
-        "label": "pd.from_sql(query)",
-        "is_correct": false
+        "input": "",
+        "expected_output": "dict"
       }
     ],
-    "xp_reward": 10,
-    "order_index": 1
-  },
-  {
-    "lesson_slug": "data-analysis-project",
-    "type": "fill_blank",
-    "title": "Add a Percentage Column",
-    "instructions": "You have a DataFrame `df` with a `revenue` column. Fill in the blank to add a `pct` column showing each row's share of total revenue, rounded to 1 decimal place.",
-    "starter_code": "import pandas as pd\n\ndf = pd.DataFrame({\n    'product': ['A', 'B', 'C'],\n    'revenue': [5000, 3000, 2000],\n})\n\ntotal = df['revenue'].sum()\ndf['pct'] = (df['revenue'] / _____ * 100).round(_____)\nprint(df)",
-    "solution_code": "import pandas as pd\n\ndf = pd.DataFrame({\n    'product': ['A', 'B', 'C'],\n    'revenue': [5000, 3000, 2000],\n})\n\ntotal = df['revenue'].sum()\ndf['pct'] = (df['revenue'] / total * 100).round(1)\nprint(df)",
-    "hints": [
-      "Divide each row's revenue by the total to get a fraction, then multiply by 100.",
-      "The `total` variable already holds df['revenue'].sum().",
-      "Fill in: total and 1"
-    ],
-    "test_cases": null,
     "options": null,
-    "xp_reward": 15,
-    "order_index": 2
-  },
-  {
-    "lesson_slug": "data-analysis-project",
-    "type": "mini_project",
-    "title": "Full Sales Analysis Pipeline",
-    "instructions": "Build a complete analysis pipeline:\n1. Create an in-memory SQLite DB with `products` (id, name, price) and `sales` (id, product_id, quantity) tables\n2. Insert at least 3 products and 6 sales records\n3. Use pd.read_sql with a JOIN + GROUP BY query to get revenue per product\n4. Add a `revenue_pct` column showing each product's % of total\n5. Print the final DataFrame sorted by revenue descending\n6. Print one line: 'Top product: <name> ($<revenue>)'",
-    "starter_code": "import sqlite3\nimport pandas as pd\n\n# 1. Setup\nwith sqlite3.connect(':memory:') as conn:\n    conn.executescript('''CREATE TABLE products (\n        id INTEGER PRIMARY KEY, name TEXT, price REAL\n    );\n    CREATE TABLE sales (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        product_id INTEGER, quantity INTEGER\n    );''')\n\n    # 2. Insert data\n    products = []  # fill in: (id, name, price)\n    sales_data = []  # fill in: (product_id, quantity)\n    conn.executemany('INSERT INTO products VALUES (?,?,?)', products)\n    conn.executemany('INSERT INTO sales (product_id,quantity) VALUES (?,?)', sales_data)\n\n    # 3. Query into pandas\n    df = pd.read_sql('''SELECT p.name,\n        SUM(s.quantity * p.price) AS revenue\n    FROM sales s JOIN products p ON s.product_id = p.id\n    GROUP BY p.id ORDER BY revenue DESC''', conn)\n\n    # 4. Add pct column\n    # your code here\n\n    # 5. Print DataFrame\n    print(df)\n\n    # 6. Print top product\n    # your code here",
-    "solution_code": "import sqlite3\nimport pandas as pd\n\nwith sqlite3.connect(':memory:') as conn:\n    conn.executescript('''CREATE TABLE products (\n        id INTEGER PRIMARY KEY, name TEXT, price REAL\n    );\n    CREATE TABLE sales (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        product_id INTEGER, quantity INTEGER\n    );''')\n\n    products = [(1,'Python Course',99), (2,'Keyboard',149), (3,'Mouse',49)]\n    sales_data = [(1,3),(1,2),(2,1),(2,2),(3,5),(3,3)]\n    conn.executemany('INSERT INTO products VALUES (?,?,?)', products)\n    conn.executemany('INSERT INTO sales (product_id,quantity) VALUES (?,?)', sales_data)\n\n    df = pd.read_sql('''SELECT p.name,\n        SUM(s.quantity * p.price) AS revenue\n    FROM sales s JOIN products p ON s.product_id = p.id\n    GROUP BY p.id ORDER BY revenue DESC''', conn)\n\n    total = df['revenue'].sum()\n    df['revenue_pct'] = (df['revenue'] / total * 100).round(1)\n\n    print(df)\n\n    top = df.iloc[0]\n    print(f\"Top product: {top['name']} (${top['revenue']:.0f})\")",
-    "hints": [
-      "Products need tuples of (id, name, price) — e.g. (1, 'Python Course', 99).",
-      "Sales need (product_id, quantity) pairs matching your product IDs.",
-      "df.iloc[0] gets the first row (highest revenue since query is ORDER BY revenue DESC)."
-    ],
-    "test_cases": null,
-    "options": null,
-    "xp_reward": 35,
+    "xp_reward": 30,
     "order_index": 3
   }
 ]

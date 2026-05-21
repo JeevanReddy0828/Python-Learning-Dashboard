@@ -21,7 +21,9 @@
       "Bash(python -m app.curriculum.seed)",
       "Bash(del backend\\\\app\\\\curriculum\\\\add_sql_module.py)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(python rebuild_sql_module.py)",
+      "Bash(python add_sql_visuals.py)"
     ]
   }
 }

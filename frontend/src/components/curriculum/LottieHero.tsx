@@ -25,11 +25,18 @@ const META: Record<string, { emoji: string; label: string; gradient: string; tok
   'try-except-errors':    { emoji: '🛡️', label: 'Handle errors without crashing',  gradient: 'from-red-600 to-pink-800',       tokens: ['try:','except','ValueError','finally','raise'] },
   'what-is-an-api':       { emoji: '🌐', label: 'APIs let programs talk online',   gradient: 'from-sky-600 to-blue-800',       tokens: ['requests.get()','JSON','status 200','API key','headers'] },
   'number-guessing-game': { emoji: '🎮', label: 'Build a real Python game!',       gradient: 'from-fuchsia-600 to-purple-800', tokens: ['random','while','guess','int(input())','🎉 Win!'] },
-  'sql-basics':            { emoji: '🗃️', label: 'SQL: ask your database anything', gradient: 'from-sky-700 to-indigo-800',      tokens: ['SELECT','WHERE','ORDER BY','LIMIT','DISTINCT'] },
-  'python-sqlite':         { emoji: '🐍', label: 'Python talks directly to SQLite',  gradient: 'from-violet-700 to-blue-800',    tokens: ['sqlite3','execute()','fetchall()','commit()','? params'] },
-  'sql-joins-aggregates':  { emoji: '🔗', label: 'JOIN + GROUP BY = power queries', gradient: 'from-teal-700 to-cyan-800',      tokens: ['JOIN','GROUP BY','SUM()','COUNT()','HAVING'] },
-  'pandas-dataframes':     { emoji: '🐼', label: 'pandas: spreadsheets in Python',  gradient: 'from-green-700 to-emerald-800',  tokens: ['DataFrame','groupby()','filter','mean()','to_csv()'] },
-  'data-analysis-project': { emoji: '📊', label: 'Full pipeline: DB → insights',    gradient: 'from-amber-600 to-orange-800',   tokens: ['read_sql()','rolling()','ExcelWriter','pipeline','insights'] },
+  'sql-how-databases-think': { emoji: '🗄️', label: 'Tables, keys & relationships',    gradient: 'from-slate-700 to-indigo-800',   tokens: ['PK','FK','table','row','schema'] },
+  'sql-select-from':         { emoji: '🎯', label: 'SELECT the columns you need',    gradient: 'from-sky-600 to-blue-800',       tokens: ['SELECT','FROM','AS','||','DISTINCT'] },
+  'sql-where-filtering':     { emoji: '🔎', label: 'WHERE filters rows precisely',   gradient: 'from-violet-600 to-purple-800',  tokens: ['WHERE','LIKE','IN','IS NULL','BETWEEN'] },
+  'sql-sorting-limiting':    { emoji: '📊', label: 'ORDER BY sorts, LIMIT slices',   gradient: 'from-cyan-600 to-teal-800',      tokens: ['ORDER BY','DESC','LIMIT','OFFSET','NULLS LAST'] },
+  'sql-aggregates':          { emoji: '🧮', label: 'Aggregate rows into answers',    gradient: 'from-emerald-600 to-green-800',  tokens: ['COUNT(*)','SUM()','AVG()','GROUP BY','HAVING'] },
+  'sql-joins-deep-dive':     { emoji: '🔗', label: 'JOINs combine tables',           gradient: 'from-blue-600 to-indigo-800',    tokens: ['INNER','LEFT','FULL','ON','IS NULL'] },
+  'sql-ctes-subqueries':     { emoji: '🧱', label: 'CTEs make complex SQL readable', gradient: 'from-purple-600 to-violet-800',  tokens: ['WITH','AS (','EXISTS','RECURSIVE','step by step'] },
+  'sql-window-functions':    { emoji: '🪟', label: 'Window functions: rank & compare', gradient: 'from-fuchsia-600 to-pink-800', tokens: ['OVER()','PARTITION BY','ROW_NUMBER','LAG','LEAD'] },
+  'sql-data-quality':        { emoji: '🔍', label: 'Detect bad data before it bites', gradient: 'from-red-600 to-rose-800',      tokens: ['duplicates','IS NULL','orphans','stale','COUNT(DISTINCT)'] },
+  'sql-views':               { emoji: '📋', label: 'Views save & reuse your queries', gradient: 'from-teal-600 to-emerald-800',  tokens: ['CREATE VIEW','OR REPLACE','MATERIALIZED','REFRESH','GRANT'] },
+  'sql-debugging':           { emoji: '🐛', label: 'Debug silent SQL logic errors',   gradient: 'from-amber-600 to-orange-800',  tokens: ['COUNT(*)','row explosion','IS NULL','sanity check','NULLIF'] },
+  'sql-python-postgresql':   { emoji: '🐍', label: 'Python automates your SQL work',  gradient: 'from-green-600 to-teal-800',    tokens: ['psycopg2','fetchall()','%s param','read_sql()','to_excel()'] },
 }
 
 // ── Optional Lottie animation paths (add real lottie.host URLs here) ──────────
