@@ -47,17 +47,20 @@ export default function SocraticStandalone({ onGenerated }: Props) {
 Keep it under 100 words.`
 
     setMessages([{ role: 'ai', text: '', phase: 'intro' }])
-    await streamChat(
+    const result = await streamChat(
       prompt,
       (token) => setMessages((prev) => {
         const updated = [...prev]
         updated[updated.length - 1] = { ...updated[updated.length - 1], text: updated[updated.length - 1].text + token }
         return updated
       }),
-      () => { setPhase('explain'); setLoading(false) },
+      () => setLoading(false),
       '',
       topic,
     )
+    // Only advance phase if the AI actually responded — otherwise the error
+    // is rendered in the bubble and the student can retry from the same state.
+    if (result.ok) setPhase('explain')
   }
 
   async function sendMessage() {
@@ -70,7 +73,8 @@ Keep it under 100 words.`
     const history = messages.map((m) => `${m.role === 'ai' ? 'Tutor' : 'Student'}: ${m.text}`).join('\n')
 
     let prompt: string
-    if (phase === 'explain') {
+    const wasExplain = phase === 'explain'
+    if (wasExplain) {
       prompt = `You are a Socratic Python tutor. Topic: "${topic}".
 
 Conversation so far:
@@ -83,8 +87,6 @@ Evaluate their explanation:
 - If missing key ideas: gently note what's missing (not more than 2 gaps), give a tiny hint, ask them to try again.
 - Keep response under 80 words. Be encouraging and ADHD-friendly.
 - If they got it well, end with: [MASTERED]`
-
-      setPhase('reexplain')
     } else {
       prompt = `You are a Socratic Python tutor. Topic: "${topic}".
 
@@ -102,7 +104,7 @@ Continue the Socratic dialogue:
 
     const currentPhase = phase
     setMessages((prev) => [...prev, { role: 'ai', text: '', phase: currentPhase }])
-    await streamChat(
+    const result = await streamChat(
       prompt,
       (token) => setMessages((prev) => {
         const updated = [...prev]
@@ -125,6 +127,9 @@ Continue the Socratic dialogue:
       '',
       topic,
     )
+    // Only advance the Socratic phase if the AI actually answered.
+    // Otherwise the student stays in `explain` and can retry without confusion.
+    if (result.ok && wasExplain) setPhase('reexplain')
   }
 
   function reset() {
