@@ -38,7 +38,14 @@ def create_app() -> FastAPI:
 
     @app.get("/api/health")
     async def health():
-        return {"status": "ok"}
+        from app.services.cache_service import redis_healthy, get_failure_counts
+        return {
+            "status": "ok",
+            "redis": {
+                "healthy": await redis_healthy(),
+                "swallowed_failures": get_failure_counts(),
+            },
+        }
 
     return app
 

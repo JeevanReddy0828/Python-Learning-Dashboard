@@ -64,6 +64,7 @@ async def chat(
     )
 
     # Persist to session history (fire-and-forget style — don't fail the request if DB write fails)
+    persisted = True
     try:
         session_title = payload.lesson_title or payload.message[:60] or "AI Chat"
         # Find or create today's session for this context
@@ -88,9 +89,15 @@ async def chat(
         session.last_message_at = datetime.now(timezone.utc)
         await db.commit()
     except Exception:
+        persisted = False
         logger.warning("Failed to persist chat history for user %s", current_user.id, exc_info=True)
+        # Roll back the failed transaction so the session is reusable for subsequent queries
+        try:
+            await db.rollback()
+        except Exception:
+            logger.exception("Rollback also failed for user %s", current_user.id)
 
-    return ChatResponse(response=response)
+    return ChatResponse(response=response, persisted=persisted)
 
 
 @router.post("/stream-chat")

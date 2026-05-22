@@ -49,3 +49,4 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    persisted: bool = True  # False if the chat history failed to save to DB (Redis cache still works)
