@@ -165,12 +165,17 @@ The tech stack is locked. Do not silently swap tools, libraries, or patterns. Fl
 
 | Layer | Choice |
 |---|---|
-| Language | — |
-| Framework | — |
-| Package manager | — |
-| Database | — |
-| Testing | — |
-| Styling | — |
+| Language | Python 3.12 (backend) · TypeScript 5 (frontend) |
+| Framework | FastAPI + SQLAlchemy 2.0 async (backend) · React 18 + Vite 5 (frontend) |
+| Package manager | pip (backend) · npm (frontend) |
+| Database | PostgreSQL 16 (primary) · Redis 7 (cache + leaderboard) |
+| Testing | pytest (backend, `backend/tests/integration/`) · frontend has no test suite yet |
+| Styling | TailwindCSS 3 + Framer Motion |
+| State (frontend) | Zustand |
+| Code execution | Pyodide (browser, primary) · sandboxed subprocess (backend fallback) |
+| AI provider | NVIDIA NIM (default) · OpenAI / ZAI (alt) — switched via env, never per-call |
+| Auth | JWT HS256 via `python-jose`, bcrypt via `passlib` |
+| Infra | Docker Compose (db + redis + backend + frontend) |
 
 ---
 
