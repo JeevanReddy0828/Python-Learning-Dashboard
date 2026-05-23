@@ -54,5 +54,12 @@
     "description": "Put everything together and build things you can show to people.",
     "icon": "🚀",
     "order_index": 8
+  },
+  {
+    "slug": "sql-and-data",
+    "title": "SQL & Data",
+    "description": "Query databases, wrangle data with pandas, and turn raw numbers into insights.",
+    "icon": "🗃️",
+    "order_index": 9
   }
 ]
