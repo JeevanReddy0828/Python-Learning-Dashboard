@@ -25,6 +25,11 @@ const META: Record<string, { emoji: string; label: string; gradient: string; tok
   'try-except-errors':    { emoji: '🛡️', label: 'Handle errors without crashing',  gradient: 'from-red-600 to-pink-800',       tokens: ['try:','except','ValueError','finally','raise'] },
   'what-is-an-api':       { emoji: '🌐', label: 'APIs let programs talk online',   gradient: 'from-sky-600 to-blue-800',       tokens: ['requests.get()','JSON','status 200','API key','headers'] },
   'number-guessing-game': { emoji: '🎮', label: 'Build a real Python game!',       gradient: 'from-fuchsia-600 to-purple-800', tokens: ['random','while','guess','int(input())','🎉 Win!'] },
+  'sql-basics':            { emoji: '🗃️', label: 'SQL: ask your database anything', gradient: 'from-sky-700 to-indigo-800',      tokens: ['SELECT','WHERE','ORDER BY','LIMIT','DISTINCT'] },
+  'python-sqlite':         { emoji: '🐍', label: 'Python talks directly to SQLite',  gradient: 'from-violet-700 to-blue-800',    tokens: ['sqlite3','execute()','fetchall()','commit()','? params'] },
+  'sql-joins-aggregates':  { emoji: '🔗', label: 'JOIN + GROUP BY = power queries', gradient: 'from-teal-700 to-cyan-800',      tokens: ['JOIN','GROUP BY','SUM()','COUNT()','HAVING'] },
+  'pandas-dataframes':     { emoji: '🐼', label: 'pandas: spreadsheets in Python',  gradient: 'from-green-700 to-emerald-800',  tokens: ['DataFrame','groupby()','filter','mean()','to_csv()'] },
+  'data-analysis-project': { emoji: '📊', label: 'Full pipeline: DB → insights',    gradient: 'from-amber-600 to-orange-800',   tokens: ['read_sql()','rolling()','ExcelWriter','pipeline','insights'] },
 }
 
 // ── Optional Lottie animation paths (add real lottie.host URLs here) ──────────
