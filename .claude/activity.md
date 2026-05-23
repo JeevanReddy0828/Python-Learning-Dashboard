@@ -17,3 +17,4 @@ test
 - 2026-05-23 21:32 session on project
 - 2026-05-22 13:36 session on curriculum
 - 2026-05-23 15:41 session on curriculum
+- 2026-05-23 18:02 session on backend
