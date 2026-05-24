@@ -22,3 +22,4 @@ test
 - 2026-05-23 09:25 session on components
 - 2026-05-24 18:40 session on components
 - 2026-05-23 11:35 session on project
+- 2026-05-24 13:54 session on project
