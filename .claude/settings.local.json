@@ -24,7 +24,8 @@
       "Bash(git commit *)",
       "Bash(python rebuild_sql_module.py)",
       "Bash(python add_sql_visuals.py)",
-      "Bash(curl -s http://localhost:8000/api/health)"
+      "Bash(curl -s http://localhost:8000/api/health)",
+      "Bash(ls \"E:\\\\projects\\\\payments-api\\\\payments-api\\\\\" 2>&1 | head -30)"
     ]
   }
 }
